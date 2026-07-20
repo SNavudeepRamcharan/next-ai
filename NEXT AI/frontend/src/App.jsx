@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import MainLayout from "./components/layout/MainLayout";
 import Header from "./components/layout/Header";
-
 import ChatWindow from "./components/chat/ChatWindow";
 import ChatInput from "./components/chat/ChatInput";
 import TypingIndicator from "./components/chat/TypingIndicator";
@@ -13,6 +12,18 @@ function App() {
   const [messages, setMessages] = useState([]);
   const [selectedModel, setSelectedModel] = useState("openai/gpt-4.1-mini");
 
+  const [chatId, setChatId] = useState(crypto.randomUUID());
+
+  // NEW
+  const [imagePath, setImagePath] = useState(null);
+
+  function newChat() {
+    setMessages([]);
+    setMessage("");
+    setImagePath(null);
+    setChatId(crypto.randomUUID());
+  }
+
   async function sendMessage() {
     if (!message.trim()) return;
 
@@ -21,75 +32,74 @@ function App() {
       text: message,
     };
 
-    // 1. Pre-calculate the updated history including the brand new user message
-    const updatedMessages = [...messages, userMessage];
+    const updated = [...messages, userMessage];
 
-    // Show the user message on screen immediately
-    setMessages(updatedMessages);
+    setMessages(updated);
 
-    const currentMessage = message;
     setMessage("");
+
     setLoading(true);
-    
+
     try {
-      // 2. Map the conversation history format to what OpenRouter/FastAPI expects
-      const formattedHistory = updatedMessages.map((msg) => ({
-        role: msg.sender === "user" ? "user" : "assistant",
-        content: msg.text,
+      const formatted = updated.map((m) => ({
+        role: m.sender === "user" ? "user" : "assistant",
+        content: m.text,
       }));
 
-      const response = await fetch("http://127.0.0.1:8000/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          messages: formattedHistory, // Sending the full thread history
-          model: selectedModel,
-        }),
-      });
+      const response = await fetch(
+        "http://127.0.0.1:8000/chat",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+            chat_id: chatId,
+            messages: formatted,
+            model: selectedModel,
+
+            // NEW
+            image: imagePath,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || "Backend error");
+        throw new Error("Backend Error");
       }
-
-      setLoading(false);
 
       const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let done = false;
-      let accumulatedText = "";
 
-      // Append an initial empty AI message bubble
+      const decoder = new TextDecoder();
+
+      let reply = "";
+
       setMessages((prev) => [
         ...prev,
-        { sender: "ai", text: "" }
+        {
+          sender: "ai",
+          text: "",
+        },
       ]);
 
-      while (!done) {
-        const { value, done: doneReading } = await reader.read();
-        done = doneReading;
-        
-        if (value) {
-          const chunk = decoder.decode(value, { stream: !done });
-          accumulatedText += chunk;
+      while (true) {
+        const { value, done } = await reader.read();
 
-          setMessages((prev) => {
-            const updated = [...prev];
-            if (updated.length > 0) {
-              updated[updated.length - 1] = {
-                ...updated[updated.length - 1],
-                text: accumulatedText,
-              };
-            }
-            return updated;
-          });
-        }
+        if (done) break;
+
+        reply += decoder.decode(value);
+
+        setMessages((prev) => {
+          const copy = [...prev];
+
+          copy[copy.length - 1].text = reply;
+
+          return copy;
+        });
       }
-
     } catch (err) {
-      setLoading(false);
       setMessages((prev) => [
         ...prev,
         {
@@ -98,10 +108,12 @@ function App() {
         },
       ]);
     }
+
+    setLoading(false);
   }
 
   return (
-    <MainLayout>
+    <MainLayout newChat={newChat}>
       <Header
         selectedModel={selectedModel}
         setSelectedModel={setSelectedModel}
@@ -116,7 +128,9 @@ function App() {
         setMessage={setMessage}
         sendMessage={sendMessage}
         loading={loading}
-        setImageUrl={setImageUrl}
+
+        // NEW
+        setImagePath={setImagePath}
       />
     </MainLayout>
   );

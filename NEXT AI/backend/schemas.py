@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel
 
 
@@ -10,6 +11,8 @@ class ChatRequest(BaseModel):
     chat_id: str
     messages: list[ChatMessage]
     model: str = "openai/gpt-4.1-mini"
+
+    image: Optional[str] = None
 
 
 class ChatSessionResponse(BaseModel):

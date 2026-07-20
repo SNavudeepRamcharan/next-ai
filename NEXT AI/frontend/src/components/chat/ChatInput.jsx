@@ -5,10 +5,9 @@ function ChatInput({
   setMessage,
   sendMessage,
   loading,
-  setImageUrl,
+  setImagePath,
 }) {
   const [selectedImage, setSelectedImage] = useState(null);
-
 
   async function uploadImage(file) {
     const formData = new FormData();
@@ -23,16 +22,21 @@ function ChatInput({
         }
       );
 
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
       const data = await response.json();
 
       console.log("Uploaded:", data);
 
-      setImageUrl(data.path);
+      setImagePath(data.path);
 
-      alert("Image uploaded successfully!");
+      alert("✅ Image uploaded successfully!");
+
     } catch (err) {
       console.error(err);
-      alert("Image upload failed.");
+      alert("❌ Image upload failed.");
     }
   }
 
@@ -46,6 +50,13 @@ function ChatInput({
     uploadImage(file);
   }
 
+  function handleKeyDown(e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
   return (
     <div
       style={{
@@ -54,13 +65,18 @@ function ChatInput({
       }}
     >
       {selectedImage && (
-        <div style={{ marginBottom: "10px" }}>
+        <div
+          style={{
+            marginBottom: "12px",
+          }}
+        >
           <img
             src={URL.createObjectURL(selectedImage)}
             alt="preview"
             style={{
               width: "150px",
               borderRadius: "10px",
+              border: "1px solid #444",
             }}
           />
         </div>
@@ -70,6 +86,7 @@ function ChatInput({
         style={{
           display: "flex",
           gap: "10px",
+          alignItems: "center",
         }}
       >
         <label
@@ -79,6 +96,7 @@ function ChatInput({
             padding: "12px",
             borderRadius: "10px",
             cursor: "pointer",
+            fontSize: "20px",
           }}
         >
           📎
@@ -94,6 +112,7 @@ function ChatInput({
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="Ask Next AI..."
           style={{
             flex: 1,
@@ -114,7 +133,7 @@ function ChatInput({
             width: "120px",
             border: "none",
             borderRadius: "10px",
-            background: "#3b82f6",
+            background: "#2563eb",
             color: "white",
             fontWeight: "bold",
             cursor: "pointer",
