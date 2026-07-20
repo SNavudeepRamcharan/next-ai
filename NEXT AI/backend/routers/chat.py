@@ -1,28 +1,56 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
+from sqlmodel import Session
 
+from database import get_session
+from repositories.chat_repository import ChatRepository
 from schemas import ChatRequest
-from conversation_manager import conversation_manager
 from services.ai_service import create_stream
 
 router = APIRouter(tags=["Chat"])
 
 
 @router.post("/chat")
-async def chat(req: ChatRequest):
+async def chat(
+    req: ChatRequest,
+    session: Session = Depends(get_session),
+):
     try:
 
-        conversation_manager.clear_chat(req.chat_id)
+        # Create chat if it doesn't exist
+        ChatRepository.create_chat(
+            session=session,
+            chat_id=req.chat_id,
+        )
 
-        for msg in req.messages:
-            conversation_manager.add_message(
-                req.chat_id,
-                msg.role,
-                msg.content,
+        # Save latest user message
+        if req.messages:
+            last = req.messages[-1]
+
+            ChatRepository.add_message(
+                session=session,
+                chat_id=req.chat_id,
+                role=last.role,
+                content=last.content,
             )
 
-        history = conversation_manager.get_messages(req.chat_id)
+        # Load complete history from database
+        db_messages = ChatRepository.get_messages(
+            session=session,
+            chat_id=req.chat_id,
+        )
 
+        history = []
+
+        for msg in db_messages:
+            history.append(
+                {
+                    "role": msg.role,
+                    "content": msg.content,
+                }
+            )
+
+        # Ask AI
         stream = await create_stream(
             model=req.model,
             messages=history,
@@ -44,15 +72,15 @@ async def chat(req: ChatRequest):
                     content = chunk.choices[0].delta.content
 
                     if content:
-
                         full_reply += content
-
                         yield content
 
-            conversation_manager.add_message(
-                req.chat_id,
-                "assistant",
-                full_reply,
+            # Save AI reply
+            ChatRepository.add_message(
+                session=session,
+                chat_id=req.chat_id,
+                role="assistant",
+                content=full_reply,
             )
 
         return StreamingResponse(

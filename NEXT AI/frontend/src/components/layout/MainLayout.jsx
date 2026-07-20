@@ -1,6 +1,6 @@
 import Sidebar from "../sidebar/Sidebar";
 
-function MainLayout({ children }) {
+function MainLayout({ children, newChat }) {
   return (
     <div
       style={{
@@ -9,7 +9,7 @@ function MainLayout({ children }) {
         background: "#131314",
       }}
     >
-      <Sidebar />
+      <Sidebar newChat={newChat} />
 
       <div
         style={{

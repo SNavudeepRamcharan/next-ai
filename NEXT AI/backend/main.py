@@ -9,9 +9,11 @@ from database import create_db
 
 from routers.chat import router as chat_router
 from routers.image import router as image_router
+from routers.history import router as history_router
 
 app = FastAPI(
-    title="Next AI Backend"
+    title="Next AI Backend",
+    version="1.0.0",
 )
 
 
@@ -28,8 +30,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+# ===========================
+# Routers
+# ===========================
+
 app.include_router(chat_router)
 app.include_router(image_router)
+app.include_router(history_router)
 
 
 @app.get("/")

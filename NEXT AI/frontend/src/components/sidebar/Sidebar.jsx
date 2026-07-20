@@ -1,10 +1,23 @@
-function Sidebar() {
-  const chats = [
-    "New Chat",
-    "React Help",
-    "Python Notes",
-    "AI Models",
-  ];
+import { useEffect, useState } from "react";
+
+function Sidebar({ newChat }) {
+  const [chats, setChats] = useState([]);
+
+  async function loadChats() {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/history/chats");
+
+      const data = await response.json();
+
+      setChats(data);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  useEffect(() => {
+    loadChats();
+  }, []);
 
   return (
     <div
@@ -18,7 +31,6 @@ function Sidebar() {
         borderRight: "1px solid #333",
       }}
     >
-      {/* Logo */}
       <div
         style={{
           padding: "20px",
@@ -30,8 +42,8 @@ function Sidebar() {
         ✦ Next AI
       </div>
 
-      {/* New Chat Button */}
       <button
+        onClick={newChat}
         style={{
           margin: "20px",
           padding: "12px",
@@ -46,7 +58,6 @@ function Sidebar() {
         ➕ New Chat
       </button>
 
-      {/* Chat List */}
       <div
         style={{
           flex: 1,
@@ -54,23 +65,33 @@ function Sidebar() {
           padding: "0 10px",
         }}
       >
-        {chats.map((chat, index) => (
+        {chats.length === 0 ? (
           <div
-            key={index}
             style={{
-              padding: "12px",
-              borderRadius: "8px",
-              marginBottom: "8px",
-              background: "#2a2b32",
-              cursor: "pointer",
+              color: "#888",
+              padding: "10px",
             }}
           >
-            💬 {chat}
+            No chats yet
           </div>
-        ))}
+        ) : (
+          chats.map((chat) => (
+            <div
+              key={chat.id}
+              style={{
+                padding: "12px",
+                borderRadius: "8px",
+                marginBottom: "8px",
+                background: "#2a2b32",
+                cursor: "pointer",
+              }}
+            >
+              💬 {chat.title}
+            </div>
+          ))
+        )}
       </div>
 
-      {/* Footer */}
       <div
         style={{
           padding: "20px",
