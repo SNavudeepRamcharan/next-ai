@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 
 function Sidebar({ newChat, openChat }) {
+  const API = import.meta.env.VITE_API_URL;
   const [chats, setChats] = useState([]);
 
   async function loadChats() {
     try {
-      const response = await fetch("http://127.0.0.1:8000/history/chats");
+      const response = await fetch(`${API}/history/chats`);
       const data = await response.json();
       setChats(data);
     } catch (err) {
@@ -22,7 +23,7 @@ function Sidebar({ newChat, openChat }) {
 
     if (!title) return;
 
-    await fetch(`http://127.0.0.1:8000/history/chat/${chat.id}`, {
+    await fetch(`${API}/history/chat/${chat.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -38,7 +39,7 @@ function Sidebar({ newChat, openChat }) {
   async function deleteChat(id) {
     if (!window.confirm("Delete this chat?")) return;
 
-    await fetch(`http://127.0.0.1:8000/history/chat/${id}`, {
+    await fetch(`${API}/history/chat/${id}`, {
       method: "DELETE",
     });
 

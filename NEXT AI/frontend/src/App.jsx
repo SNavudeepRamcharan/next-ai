@@ -6,7 +6,9 @@ import ChatWindow from "./components/chat/ChatWindow";
 import ChatInput from "./components/chat/ChatInput";
 import TypingIndicator from "./components/chat/TypingIndicator";
 
+
 function App() {
+  const API = import.meta.env.VITE_API_URL;
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -26,7 +28,7 @@ function App() {
   async function openChat(id) {
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/history/chat/${id}`
+        `${API}/history/chat/${id}`
       );
 
       const data = await res.json();
@@ -66,8 +68,7 @@ function App() {
         content: m.text,
       }));
 
-      const response = await fetch(
-        "http://127.0.0.1:8000/chat",
+      const response = await fetch(`${API}/chat`, 
         {
           method: "POST",
 
