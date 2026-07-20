@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 
-function Sidebar({ newChat }) {
+function Sidebar({ newChat, openChat }) {
   const [chats, setChats] = useState([]);
 
   async function loadChats() {
     try {
       const response = await fetch("http://127.0.0.1:8000/history/chats");
-
       const data = await response.json();
-
       setChats(data);
     } catch (err) {
       console.error(err);
@@ -19,23 +17,50 @@ function Sidebar({ newChat }) {
     loadChats();
   }, []);
 
+  async function renameChat(chat) {
+    const title = prompt("Enter new chat title", chat.title);
+
+    if (!title) return;
+
+    await fetch(`http://127.0.0.1:8000/history/chat/${chat.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+      }),
+    });
+
+    loadChats();
+  }
+
+  async function deleteChat(id) {
+    if (!window.confirm("Delete this chat?")) return;
+
+    await fetch(`http://127.0.0.1:8000/history/chat/${id}`, {
+      method: "DELETE",
+    });
+
+    loadChats();
+  }
+
   return (
     <div
       style={{
-        width: "260px",
+        width: "270px",
         height: "100vh",
         background: "#202123",
         color: "white",
         display: "flex",
         flexDirection: "column",
-        borderRight: "1px solid #333",
       }}
     >
       <div
         style={{
           padding: "20px",
-          fontSize: "24px",
           fontWeight: "bold",
+          fontSize: "24px",
           borderBottom: "1px solid #333",
         }}
       >
@@ -45,14 +70,13 @@ function Sidebar({ newChat }) {
       <button
         onClick={newChat}
         style={{
-          margin: "20px",
+          margin: "15px",
           padding: "12px",
-          background: "#10a37f",
-          color: "white",
           border: "none",
           borderRadius: "8px",
+          background: "#10a37f",
+          color: "white",
           cursor: "pointer",
-          fontSize: "16px",
         }}
       >
         ➕ New Chat
@@ -62,44 +86,78 @@ function Sidebar({ newChat }) {
         style={{
           flex: 1,
           overflowY: "auto",
-          padding: "0 10px",
+          padding: "10px",
         }}
       >
-        {chats.length === 0 ? (
+        {chats.map((chat) => (
           <div
+            key={chat.id}
             style={{
-              color: "#888",
+              background: "#2a2b32",
+              borderRadius: "8px",
+              marginBottom: "10px",
               padding: "10px",
             }}
           >
-            No chats yet
-          </div>
-        ) : (
-          chats.map((chat) => (
             <div
-              key={chat.id}
+              onClick={() => openChat(chat.id)}
               style={{
-                padding: "12px",
-                borderRadius: "8px",
-                marginBottom: "8px",
-                background: "#2a2b32",
                 cursor: "pointer",
+                marginBottom: "8px",
+                fontWeight: "bold",
               }}
             >
               💬 {chat.title}
             </div>
-          ))
-        )}
+
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+              }}
+            >
+              <button
+                onClick={() => renameChat(chat)}
+                style={{
+                  flex: 1,
+                  background: "#3b82f6",
+                  border: "none",
+                  color: "white",
+                  padding: "6px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                }}
+              >
+                ✏️ Rename
+              </button>
+
+              <button
+                onClick={() => deleteChat(chat.id)}
+                style={{
+                  flex: 1,
+                  background: "#dc2626",
+                  border: "none",
+                  color: "white",
+                  padding: "6px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                }}
+              >
+                🗑 Delete
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
 
       <div
         style={{
           padding: "20px",
           borderTop: "1px solid #333",
-          color: "#999",
+          color: "#888",
         }}
       >
-        ⚙️ Settings
+        Next AI v2
       </div>
     </div>
   );

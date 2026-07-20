@@ -14,7 +14,6 @@ function App() {
 
   const [chatId, setChatId] = useState(crypto.randomUUID());
 
-  // NEW
   const [imagePath, setImagePath] = useState(null);
 
   function newChat() {
@@ -24,15 +23,36 @@ function App() {
     setChatId(crypto.randomUUID());
   }
 
+  async function openChat(id) {
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:8000/history/chat/${id}`
+      );
+
+      const data = await res.json();
+
+      setChatId(id);
+
+      setMessages(
+        data.map((m) => ({
+          sender: m.role === "assistant" ? "ai" : "user",
+          text: m.content,
+        }))
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   async function sendMessage() {
     if (!message.trim()) return;
 
-    const userMessage = {
+    const user = {
       sender: "user",
       text: message,
     };
 
-    const updated = [...messages, userMessage];
+    const updated = [...messages, user];
 
     setMessages(updated);
 
@@ -59,16 +79,10 @@ function App() {
             chat_id: chatId,
             messages: formatted,
             model: selectedModel,
-
-            // NEW
             image: imagePath,
           }),
         }
       );
-
-      if (!response.ok) {
-        throw new Error("Backend Error");
-      }
 
       const reader = response.body.getReader();
 
@@ -99,21 +113,19 @@ function App() {
           return copy;
         });
       }
+
     } catch (err) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          sender: "ai",
-          text: "❌ " + err.message,
-        },
-      ]);
+      console.log(err);
     }
 
     setLoading(false);
   }
 
   return (
-    <MainLayout newChat={newChat}>
+    <MainLayout
+      newChat={newChat}
+      openChat={openChat}
+    >
       <Header
         selectedModel={selectedModel}
         setSelectedModel={setSelectedModel}
@@ -128,8 +140,6 @@ function App() {
         setMessage={setMessage}
         sendMessage={sendMessage}
         loading={loading}
-
-        // NEW
         setImagePath={setImagePath}
       />
     </MainLayout>
