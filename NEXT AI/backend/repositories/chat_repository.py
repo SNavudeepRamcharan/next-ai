@@ -99,3 +99,19 @@ class ChatRepository:
         session.delete(chat)
 
         session.commit()
+
+@staticmethod
+def rename_chat(
+    session: Session,
+    chat_id: str,
+    title: str,
+):
+    chat = session.get(Chat, chat_id)
+
+    if not chat:
+        return
+
+    chat.title = title
+
+    session.add(chat)
+    session.commit()

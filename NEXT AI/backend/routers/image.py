@@ -1,36 +1,55 @@
 from fastapi import APIRouter, UploadFile, File
 import os
 import shutil
+import uuid
 
-router = APIRouter(prefix="/image", tags=["Image"])
+router = APIRouter(
+    prefix="/file",
+    tags=["Files"],
+)
 
 UPLOAD_FOLDER = "uploads"
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Stores the latest uploaded image path
+# Latest uploaded files
 latest_image = None
+latest_pdf = None
 
 
 @router.post("/upload")
-async def upload_image(file: UploadFile = File(...)):
+async def upload_file(file: UploadFile = File(...)):
     global latest_image
+    global latest_pdf
 
-    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+    ext = file.filename.split(".")[-1].lower()
+
+    filename = f"{uuid.uuid4()}.{ext}"
+
+    file_path = os.path.join(
+        UPLOAD_FOLDER,
+        filename,
+    )
 
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    latest_image = file_path
+    if ext in ["png", "jpg", "jpeg", "webp"]:
+        latest_image = file_path
+
+    elif ext == "pdf":
+        latest_pdf = file_path
 
     return {
-        "filename": file.filename,
+        "filename": filename,
         "path": file_path,
+        "type": ext,
     }
 
 
 @router.get("/latest")
-def get_latest_image():
+def latest():
     return {
-        "image": latest_image
+        "image": latest_image,
+        "pdf": latest_pdf,
     }
