@@ -6,8 +6,11 @@ from sqlmodel import Session
 
 from database import get_session
 from repositories.chat_repository import ChatRepository
+from repositories.memory_repository import MemoryRepository
 from schemas import ChatRequest
+
 from services.ai_service import create_stream
+from services.memory_service import extract_memory
 from services.web_search import search_web
 from services.web_reader import read_webpage
 from services.youtube_reader import read_youtube
@@ -22,14 +25,21 @@ async def chat(
 ):
     try:
 
-        # Create chat if it doesn't exist
+        # ===========================
+        # Create Chat
+        # ===========================
+
         ChatRepository.create_chat(
             session=session,
             chat_id=req.chat_id,
         )
 
-        # Save latest user message
+        # ===========================
+        # Save User Message
+        # ===========================
+
         if req.messages:
+
             last = req.messages[-1]
 
             ChatRepository.add_message(
@@ -39,7 +49,23 @@ async def chat(
                 content=last.content,
             )
 
-        # Load complete history
+            # ===========================
+            # Extract Memory
+            # ===========================
+
+            memory = extract_memory(last.content)
+
+            if memory:
+
+                MemoryRepository.add_memory(
+                    session=session,
+                    text=memory,
+                )
+
+        # ===========================
+        # Load Chat History
+        # ===========================
+
         db_messages = ChatRepository.get_messages(
             session=session,
             chat_id=req.chat_id,
@@ -48,11 +74,34 @@ async def chat(
         history = []
 
         for msg in db_messages:
+
             history.append(
                 {
                     "role": msg.role,
                     "content": msg.content,
                 }
+            )
+
+        # ===========================
+        # Load User Memory
+        # ===========================
+
+        memories = MemoryRepository.get_memories(session)
+
+        if memories:
+
+            memory_text = "User Memory:\n\n"
+
+            for m in memories:
+
+                memory_text += f"- {m.memory}\n"
+
+            history.insert(
+                0,
+                {
+                    "role": "system",
+                    "content": memory_text,
+                },
             )
 
         # ===========================
@@ -74,7 +123,6 @@ async def chat(
 
                 try:
 
-                    # YouTube
                     if (
                         "youtube.com" in url
                         or "youtu.be" in url
@@ -89,25 +137,26 @@ async def chat(
                                 {
                                     "role": "system",
                                     "content":
-                                        "The following is the transcript of a YouTube video.\n\n"
-                                        + transcript,
+                                    "The following is the transcript of a YouTube video.\n\n"
+                                    + transcript,
                                 },
                             )
 
-                    # Normal Website
                     else:
 
                         webpage = read_webpage(url)
 
-                        history.insert(
-                            0,
-                            {
-                                "role": "system",
-                                "content":
+                        if webpage:
+
+                            history.insert(
+                                0,
+                                {
+                                    "role": "system",
+                                    "content":
                                     "The following text was extracted from a webpage.\n\n"
                                     + webpage,
-                            },
-                        )
+                                },
+                            )
 
                 except Exception:
                     pass
@@ -143,7 +192,10 @@ async def chat(
                 },
             )
 
+        # ===========================
         # Ask AI
+        # ===========================
+
         stream = await create_stream(
             model=req.model,
             messages=history,
@@ -166,10 +218,10 @@ async def chat(
                     content = chunk.choices[0].delta.content
 
                     if content:
+
                         full_reply += content
                         yield content
 
-            # Save AI reply
             ChatRepository.add_message(
                 session=session,
                 chat_id=req.chat_id,
@@ -183,6 +235,7 @@ async def chat(
         )
 
     except Exception as e:
+
         raise HTTPException(
             status_code=500,
             detail=str(e),
