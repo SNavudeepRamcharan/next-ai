@@ -9,6 +9,50 @@ function ChatInput({
 }) {
   const API = import.meta.env.VITE_API_URL;
   const [selectedImage, setSelectedImage] = useState(null);
+  const recognition =
+  typeof window !== "undefined"
+    ? (window.SpeechRecognition || window.webkitSpeechRecognition)
+    : null;
+
+    function startVoice() {
+
+    if (!recognition) {
+
+        alert("Speech Recognition is not supported in this browser.");
+
+        return;
+    }
+
+    const speech = new recognition();
+
+    speech.lang = "en-US";
+
+    speech.interimResults = false;
+
+    speech.maxAlternatives = 1;
+
+speech.onresult = (event) => {
+
+    const text = event.results[0][0].transcript;
+
+    setMessage(text);
+};
+
+speech.onerror = (event) => {
+
+    console.error("Speech Error:", event.error);
+
+    alert(`Voice Error: ${event.error}`);
+};
+
+speech.onend = () => {
+
+    console.log("Voice recognition ended");
+
+};
+
+speech.start();
+}
 
   async function uploadImage(file) {
     const formData = new FormData();
@@ -91,57 +135,72 @@ function ChatInput({
         }}
       >
         <label
-          style={{
-            background: "#444",
-            color: "white",
-            padding: "12px",
-            borderRadius: "10px",
-            cursor: "pointer",
-            fontSize: "20px",
-          }}
-        >
-          📎
+  style={{
+    background: "#444",
+    color: "white",
+    padding: "12px",
+    borderRadius: "10px",
+    cursor: "pointer",
+    fontSize: "20px",
+  }}
+>
+  📎
 
-          <input
-            type="file"
-            accept="image/*"
-            hidden
-            onChange={handleImageChange}
-          />
-        </label>
+  <input
+    type="file"
+    accept="image/*"
+    hidden
+    onChange={handleImageChange}
+  />
+</label>
 
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Ask Next AI..."
-          style={{
-            flex: 1,
-            height: "80px",
-            resize: "none",
-            padding: "10px",
-            borderRadius: "10px",
-            background: "#2b2b2b",
-            color: "white",
-            border: "none",
-          }}
-        />
+<textarea
+  value={message}
+  onChange={(e) => setMessage(e.target.value)}
+  onKeyDown={handleKeyDown}
+  placeholder="Ask Next AI..."
+  style={{
+    flex: 1,
+    height: "80px",
+    resize: "none",
+    padding: "10px",
+    borderRadius: "10px",
+    background: "#2b2b2b",
+    color: "white",
+    border: "none",
+  }}
+/>
 
-        <button
-          onClick={sendMessage}
-          disabled={loading}
-          style={{
-            width: "120px",
-            border: "none",
-            borderRadius: "10px",
-            background: "#2563eb",
-            color: "white",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
-        >
-          {loading ? "Thinking..." : "Send"}
-        </button>
+<button
+  onClick={startVoice}
+  style={{
+    width: "60px",
+    border: "none",
+    borderRadius: "10px",
+    background: "#10a37f",
+    color: "white",
+    cursor: "pointer",
+    fontSize: "20px",
+  }}
+>
+  🎤
+</button>
+
+<button
+  onClick={sendMessage}
+  disabled={loading}
+  style={{
+    width: "120px",
+    border: "none",
+    borderRadius: "10px",
+    background: "#2563eb",
+    color: "white",
+    fontWeight: "bold",
+    cursor: "pointer",
+  }}
+>
+  {loading ? "Thinking..." : "Send"}
+</button>
       </div>
     </div>
   );
