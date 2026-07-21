@@ -10,6 +10,7 @@ from schemas import ChatRequest
 from services.ai_service import create_stream
 from services.web_search import search_web
 from services.web_reader import read_webpage
+from services.youtube_reader import read_youtube
 
 router = APIRouter(tags=["Chat"])
 
@@ -55,7 +56,7 @@ async def chat(
             )
 
         # ===========================
-        # Website Reader
+        # Website / YouTube Reader
         # ===========================
 
         if history:
@@ -69,19 +70,44 @@ async def chat(
 
             if urls:
 
+                url = urls[0]
+
                 try:
 
-                    webpage = read_webpage(urls[0])
+                    # YouTube
+                    if (
+                        "youtube.com" in url
+                        or "youtu.be" in url
+                    ):
 
-                    history.insert(
-                        0,
-                        {
-                            "role": "system",
-                            "content":
-                                "The following text was extracted from a webpage.\n\n"
-                                + webpage,
-                        },
-                    )
+                        transcript = read_youtube(url)
+
+                        if transcript:
+
+                            history.insert(
+                                0,
+                                {
+                                    "role": "system",
+                                    "content":
+                                        "The following is the transcript of a YouTube video.\n\n"
+                                        + transcript,
+                                },
+                            )
+
+                    # Normal Website
+                    else:
+
+                        webpage = read_webpage(url)
+
+                        history.insert(
+                            0,
+                            {
+                                "role": "system",
+                                "content":
+                                    "The following text was extracted from a webpage.\n\n"
+                                    + webpage,
+                            },
+                        )
 
                 except Exception:
                     pass
