@@ -1,3 +1,5 @@
+import re
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from sqlmodel import Session
@@ -7,6 +9,7 @@ from repositories.chat_repository import ChatRepository
 from schemas import ChatRequest
 from services.ai_service import create_stream
 from services.web_search import search_web
+from services.web_reader import read_webpage
 
 router = APIRouter(tags=["Chat"])
 
@@ -52,10 +55,42 @@ async def chat(
             )
 
         # ===========================
+        # Website Reader
+        # ===========================
+
+        if history:
+
+            latest = history[-1]["content"]
+
+            urls = re.findall(
+                r"https?://\S+",
+                latest,
+            )
+
+            if urls:
+
+                try:
+
+                    webpage = read_webpage(urls[0])
+
+                    history.insert(
+                        0,
+                        {
+                            "role": "system",
+                            "content":
+                                "The following text was extracted from a webpage.\n\n"
+                                + webpage,
+                        },
+                    )
+
+                except Exception:
+                    pass
+
+        # ===========================
         # Web Search
         # ===========================
 
-        if req.web_search and history:
+        if req.web_search:
 
             results = search_web(
                 history[-1]["content"]
@@ -63,7 +98,7 @@ async def chat(
 
             context = (
                 "The following are live web search results.\n"
-                "Use these results to answer accurately.\n\n"
+                "Use them to answer accurately.\n\n"
             )
 
             for r in results:
@@ -87,6 +122,7 @@ async def chat(
             model=req.model,
             messages=history,
             image_path=req.image,
+            web_search=req.web_search,
         )
 
         async def generate():

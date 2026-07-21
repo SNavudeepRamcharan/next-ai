@@ -2,17 +2,22 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def read_webpage(url: str):
-
+def read_webpage(url: str) -> str:
     headers = {
-        "User-Agent": "Mozilla/5.0"
+        "User-Agent": (
+            "Mozilla/5.0 "
+            "(Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36"
+        )
     }
 
     response = requests.get(
         url,
         headers=headers,
-        timeout=10,
+        timeout=15,
     )
+
+    response.raise_for_status()
 
     soup = BeautifulSoup(
         response.text,
@@ -23,11 +28,14 @@ def read_webpage(url: str):
         "script",
         "style",
         "noscript",
+        "header",
+        "footer",
+        "nav",
     ]):
         tag.decompose()
 
-    text = soup.get_text(" ")
+    text = soup.get_text(separator=" ")
 
     text = " ".join(text.split())
 
-    return text[:12000]
+    return text[:15000]
