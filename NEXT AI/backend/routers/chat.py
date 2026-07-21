@@ -6,6 +6,7 @@ from database import get_session
 from repositories.chat_repository import ChatRepository
 from schemas import ChatRequest
 from services.ai_service import create_stream
+from services.web_search import search_web
 
 router = APIRouter(tags=["Chat"])
 
@@ -34,7 +35,7 @@ async def chat(
                 content=last.content,
             )
 
-        # Load complete history from database
+        # Load complete history
         db_messages = ChatRepository.get_messages(
             session=session,
             chat_id=req.chat_id,
@@ -48,6 +49,37 @@ async def chat(
                     "role": msg.role,
                     "content": msg.content,
                 }
+            )
+
+        # ===========================
+        # Web Search
+        # ===========================
+
+        if req.web_search and history:
+
+            results = search_web(
+                history[-1]["content"]
+            )
+
+            context = (
+                "The following are live web search results.\n"
+                "Use these results to answer accurately.\n\n"
+            )
+
+            for r in results:
+
+                context += (
+                    f"Title: {r['title']}\n"
+                    f"Snippet: {r['body']}\n"
+                    f"URL: {r['url']}\n\n"
+                )
+
+            history.insert(
+                0,
+                {
+                    "role": "system",
+                    "content": context,
+                },
             )
 
         # Ask AI
