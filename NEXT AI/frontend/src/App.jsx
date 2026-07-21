@@ -132,6 +132,8 @@ function App() {
       <Header
         selectedModel={selectedModel}
         setSelectedModel={setSelectedModel}
+        webSearch={webSearch}
+        setWebSearch={setWebSearch}
       />
 
       <ChatWindow messages={messages} />

@@ -42,7 +42,12 @@ async def generate_chat_title(message: str):
     return response.choices[0].message.content.strip()
 
 
-async def create_stream(model, messages, image_path=None):
+async def create_stream(
+    model,
+    messages,
+    image_path=None,
+    web_search=False,
+):
 
     api_messages = [
         {
@@ -89,9 +94,16 @@ async def create_stream(model, messages, image_path=None):
         api_messages.extend(messages)
 
     return await client.chat.completions.create(
-        model=model,
-        messages=api_messages,
-        temperature=0.7,
-        max_tokens=2000,
-        stream=True,
-    )
+    model=model,
+    messages=api_messages,
+
+    tools=[
+        {
+            "type": "openrouter:web_search"
+        }
+    ] if web_search else None,
+
+    temperature=0.7,
+    max_tokens=2000,
+    stream=True,
+)
