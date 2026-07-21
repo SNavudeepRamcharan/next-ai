@@ -49,5 +49,26 @@ function Header({ selectedModel, setSelectedModel }) {
     </div>
   );
 }
+function Header({
+    selectedModel,
+    setSelectedModel,
+
+    webSearch,
+    setWebSearch,
+}) {
+  <button
+    onClick={() => setWebSearch(!webSearch)}
+    style={{
+        background: webSearch ? "#10a37f" : "#444",
+        color: "white",
+        border: "none",
+        padding: "8px 14px",
+        borderRadius: "8px",
+        cursor: "pointer",
+        marginLeft: "10px",
+    }}
+>
+    🌐 {webSearch ? "Web ON" : "Web OFF"}
+</button>
 
 export default Header;

@@ -21,6 +21,7 @@ class ChatRequest(BaseModel):
     model: str = "openai/gpt-4.1-mini"
     image: str | None = None
 
+    web_search: bool = False
 
 # ==========================================
 # Chat History

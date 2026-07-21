@@ -8,6 +8,7 @@ import TypingIndicator from "./components/chat/TypingIndicator";
 
 
 function App() {
+  const [webSearch, setWebSearch] = useState(false);
   const API = import.meta.env.VITE_API_URL;
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -81,6 +82,7 @@ function App() {
             messages: formatted,
             model: selectedModel,
             image: imagePath,
+            web_search: webSearch,
           }),
         }
       );
