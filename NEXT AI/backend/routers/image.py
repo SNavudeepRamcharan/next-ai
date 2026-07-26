@@ -57,8 +57,17 @@ def latest():
         "pdf": latest_pdf,
     }
 
+import traceback
+
 @router.post("/generate")
 async def generate(request: ImageRequest):
-    result = generate_image(request.prompt)
-    print("RESULT =", result)
-    return result
+    try:
+        result = generate_image(request.prompt)
+        return result
+
+    except Exception as e:
+        traceback.print_exc()
+        return {
+            "error": str(e),
+            "trace": traceback.format_exc()
+        }
