@@ -1,10 +1,11 @@
-from fastapi import HTTPException
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, HTTPException
 from services.image_service import generate_image
+from schemas import ImageRequest
+
 import os
 import shutil
 import uuid
-from schemas import ImageRequest
+import traceback
 
 router = APIRouter(
     prefix="/file",
@@ -15,7 +16,6 @@ UPLOAD_FOLDER = "uploads"
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# Latest uploaded files
 latest_image = None
 latest_pdf = None
 
@@ -57,17 +57,15 @@ def latest():
         "pdf": latest_pdf,
     }
 
-import traceback
 
 @router.post("/generate")
 async def generate(request: ImageRequest):
     try:
-        result = generate_image(request.prompt)
-        return result
+        return generate_image(request.prompt)
 
     except Exception as e:
         traceback.print_exc()
-        return {
-            "error": str(e),
-            "trace": traceback.format_exc()
-        }
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
