@@ -1,39 +1,47 @@
-import os
-import base64
-from google import genai
-from google.genai import types
+from dotenv import load_dotenv
 
-def generate_image(prompt: str):
-    try:
-        client = genai.Client(
-            api_key=os.getenv("GEMINI_API_KEY")
-        )
+load_dotenv()
 
-        response = client.models.generate_content(
-            model="gemini-2.5-flash-image-preview",
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                response_modalities=["TEXT", "IMAGE"]
-            ),
-        )
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-        if not response.candidates:
-            return {"error": "No candidates", "response": str(response)}
+from database import create_db
 
-        for part in response.candidates[0].content.parts:
-            if getattr(part, "inline_data", None):
-                return {
-                    "image": base64.b64encode(
-                        part.inline_data.data
-                    ).decode("utf-8")
-                }
+from routers.chat import router as chat_router
+from routers.image import router as image_router
+from routers.history import router as history_router
 
-        return {
-            "error": "No image returned",
-            "response": str(response)
-        }
+app = FastAPI(
+    title="Next AI Backend",
+    version="1.0.0",
+)
 
-    except Exception as e:
-        return {
-            "error": str(e)
-        }
+
+@app.on_event("startup")
+def startup():
+    create_db()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# ===========================
+# Routers
+# ===========================
+
+app.include_router(chat_router)
+app.include_router(image_router)
+app.include_router(history_router)
+
+
+@app.get("/")
+def home():
+    return {
+        "message": "Next AI Backend is Running!"
+    }
