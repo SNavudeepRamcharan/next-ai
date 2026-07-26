@@ -1,7 +1,10 @@
+from fastapi import HTTPException
 from fastapi import APIRouter, UploadFile, File
+from services.image_service import generate_image
 import os
 import shutil
 import uuid
+from schemas import ImageRequest
 
 router = APIRouter(
     prefix="/file",
@@ -53,3 +56,9 @@ def latest():
         "image": latest_image,
         "pdf": latest_pdf,
     }
+
+@router.post("/generate")
+async def generate(request: ImageRequest):
+    result = generate_image(request.prompt)
+    print("RESULT =", result)
+    return result

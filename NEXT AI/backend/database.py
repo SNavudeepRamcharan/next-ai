@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel, Session, create_engine
 
-from models import Chat, Message
+# VERY IMPORTANT
+from models import Chat, Message, Memory
 
 DATABASE_URL = "sqlite:///next_ai.db"
 

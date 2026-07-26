@@ -1,6 +1,15 @@
+import { useEffect, useRef } from "react";
 import MessageBubble from "./MessageBubble";
 
 function ChatWindow({ messages }) {
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages]);
+
   return (
     <div
       style={{
@@ -23,13 +32,18 @@ function ChatWindow({ messages }) {
           Ask me anything!
         </div>
       ) : (
-        messages.map((msg, index) => (
-          <MessageBubble
-            key={index}
-            sender={msg.sender}
-            text={msg.text}
-          />
-        ))
+        <>
+          {messages.map((msg, index) => (
+            <MessageBubble
+              key={index}
+              sender={msg.sender}
+              text={msg.text}
+              time={msg.time}
+            />
+          ))}
+
+          <div ref={bottomRef} />
+        </>
       )}
     </div>
   );

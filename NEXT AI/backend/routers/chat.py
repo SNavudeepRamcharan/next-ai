@@ -23,6 +23,8 @@ async def chat(
     req: ChatRequest,
     session: Session = Depends(get_session),
 ):
+    print("========== CHAT ENDPOINT HIT ==========")
+
     try:
 
         # ===========================
@@ -33,6 +35,7 @@ async def chat(
             session=session,
             chat_id=req.chat_id,
         )
+        print("User message saved")
 
         # ===========================
         # Save User Message

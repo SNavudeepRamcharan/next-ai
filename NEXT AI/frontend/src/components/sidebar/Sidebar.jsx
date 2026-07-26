@@ -16,6 +16,10 @@ function Sidebar({ newChat, openChat }) {
 
   useEffect(() => {
     loadChats();
+
+    const interval = setInterval(loadChats, 2000);
+
+     return () => clearInterval(interval);
   }, []);
 
   async function renameChat(chat) {

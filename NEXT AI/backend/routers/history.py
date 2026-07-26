@@ -3,27 +3,17 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
-from database import Chat, Message, get_session
+from database import get_session
+from models import Chat, Message
+
 from schemas import RenameChatRequest
+
+from repositories.chat_repository import ChatRepository
 
 router = APIRouter(
     prefix="/history",
     tags=["History"],
 )
-
-
-# ==========================================
-# Get all chats
-# ==========================================
-
-@router.get("/chats")
-def get_chats(session: Session = Depends(get_session)):
-    chats = session.exec(
-        select(Chat).order_by(Chat.updated_at.desc())
-    ).all()
-
-    return chats
-
 
 # ==========================================
 # Get messages of one chat
@@ -89,3 +79,17 @@ def delete_chat(chat_id: str, session: Session = Depends(get_session)):
         "success": True,
         "message": "Chat deleted successfully",
     }
+
+@router.get("/chats")
+def get_chats(session: Session = Depends(get_session)):
+    chats = ChatRepository.get_chats(session)
+
+    return [
+        {
+            "id": c.id,
+            "title": c.title,
+            "created_at": c.created_at,
+            "updated_at": c.updated_at,
+        }
+        for c in chats
+    ]

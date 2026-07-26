@@ -73,11 +73,10 @@ speech.start();
 
       const data = await response.json();
 
-      console.log("Uploaded:", data);
+      console.log("IMAGE RESPONSE:", data);
+      alert(JSON.stringify(data, null, 2));
 
-      setImagePath(data.path);
-
-      alert("✅ Image uploaded successfully!");
+      return;
 
     } catch (err) {
       console.error(err);
@@ -101,6 +100,41 @@ speech.start();
       sendMessage();
     }
   }
+  async function generateImage() {
+  const prompt = message.trim();
+
+  if (!prompt) {
+    alert("Enter an image prompt first.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API}/file/generate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt,
+      }),
+    });
+
+    const data = await response.json();
+
+    console.log(data);
+
+    if (data.image) {
+        const imageUrl = `data:image/png;base64,${data.image}`;
+        window.open(imageUrl, "_blank");
+    } else {
+        alert("Image generation failed.");
+    }
+
+  } catch (err) {
+    console.error(err);
+    alert("Error generating image.");
+  }
+}
 
   return (
     <div
@@ -200,6 +234,19 @@ speech.start();
   }}
 >
   {loading ? "Thinking..." : "Send"}
+</button>
+<button
+  onClick={generateImage}
+  style={{
+    width: "140px",
+    border: "none",
+    borderRadius: "10px",
+    background: "#9333ea",
+    color: "white",
+    cursor: "pointer",
+  }}
+>
+  🎨 Generate
 </button>
       </div>
     </div>

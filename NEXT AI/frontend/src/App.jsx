@@ -6,17 +6,16 @@ import ChatWindow from "./components/chat/ChatWindow";
 import ChatInput from "./components/chat/ChatInput";
 import TypingIndicator from "./components/chat/TypingIndicator";
 
-
 function App() {
-  const [webSearch, setWebSearch] = useState(false);
   const API = import.meta.env.VITE_API_URL;
+
+  const [webSearch, setWebSearch] = useState(false);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const [selectedModel, setSelectedModel] = useState("openai/gpt-4.1-mini");
 
   const [chatId, setChatId] = useState(crypto.randomUUID());
-
   const [imagePath, setImagePath] = useState(null);
 
   function newChat() {
@@ -28,10 +27,7 @@ function App() {
 
   async function openChat(id) {
     try {
-      const res = await fetch(
-        `${API}/history/chat/${id}`
-      );
-
+      const res = await fetch(`${API}/history/chat/${id}`);
       const data = await res.json();
 
       setChatId(id);
@@ -48,19 +44,23 @@ function App() {
   }
 
   async function sendMessage() {
+    console.log("sendMessage called");
+
     if (!message.trim()) return;
 
     const user = {
       sender: "user",
       text: message,
+       time: new Date().toLocaleTimeString([], {
+       hour: "2-digit",
+       minute: "2-digit",
+      }),
     };
 
     const updated = [...messages, user];
 
     setMessages(updated);
-
     setMessage("");
-
     setLoading(true);
 
     try {
@@ -69,26 +69,27 @@ function App() {
         content: m.text,
       }));
 
-      const response = await fetch(`${API}/chat`, 
-        {
-          method: "POST",
+      console.log("Sending request to:", `${API}/chat`);
 
-          headers: {
-            "Content-Type": "application/json",
-          },
+      const response = await fetch(`${API}/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          messages: formatted,
+          model: selectedModel,
+          image: imagePath,
+          web_search: webSearch,
+        }),
+      });
 
-          body: JSON.stringify({
-            chat_id: chatId,
-            messages: formatted,
-            model: selectedModel,
-            image: imagePath,
-            web_search: webSearch,
-          }),
-        }
-      );
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
 
       const reader = response.body.getReader();
-
       const decoder = new TextDecoder();
 
       let reply = "";
@@ -110,19 +111,63 @@ function App() {
 
         setMessages((prev) => {
           const copy = [...prev];
-
           copy[copy.length - 1].text = reply;
-
           return copy;
         });
       }
-
     } catch (err) {
-      console.log(err);
+      console.error("Fetch Error:", err);
     }
 
     setLoading(false);
   }
+  function exportChat() {
+  if (messages.length === 0) {
+    alert("No chat to export.");
+    return;
+  }
+
+  const text = messages
+    .map(
+      (m) =>
+        `${m.sender === "user" ? "You" : "Next AI"}:\n${m.text}\n`
+    )
+    .join("\n-----------------\n");
+
+  const blob = new Blob([text], {
+    type: "text/plain",
+  });
+
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = "next_ai_chat.txt";
+
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+function stopGenerating() {
+  // We'll implement this later
+}
+
+function regenerateResponse() {
+  if (messages.length < 2) return;
+
+  const lastUser = [...messages]
+    .reverse()
+    .find((m) => m.sender === "user");
+
+  if (!lastUser) return;
+
+  setMessage(lastUser.text);
+
+  setTimeout(() => {
+    sendMessage();
+  }, 0);
+}
 
   return (
     <MainLayout
@@ -134,6 +179,7 @@ function App() {
         setSelectedModel={setSelectedModel}
         webSearch={webSearch}
         setWebSearch={setWebSearch}
+        exportChat={exportChat}
       />
 
       <ChatWindow messages={messages} />

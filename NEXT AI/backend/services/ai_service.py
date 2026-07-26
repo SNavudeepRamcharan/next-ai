@@ -53,8 +53,13 @@ async def create_stream(
         {
             "role": "system",
             "content": (
-                "You are Next AI, a helpful intelligent AI assistant. "
-                "Always answer using Markdown."
+                "Always answer using proper GitHub Markdown.\n"
+                "For ALL programming code, ALWAYS use fenced code blocks with the language name.\n"
+                "Example:\n"
+                "```python\n"
+                'print("Hello")\n'
+                "```\n"
+                "Never output plain code without markdown fences."                
             ),
         }
     ]
