@@ -1,39 +1,38 @@
 import os
+import requests
 import base64
-from google import genai
-from google.genai import types
+
+
+API_URL = (
+    "https://api-inference.huggingface.co/models/"
+    "black-forest-labs/FLUX.1-schnell"
+)
+
 
 def generate_image(prompt: str):
-    try:
-        client = genai.Client(
-            api_key=os.getenv("GEMINI_API_KEY")
-        )
 
-        response = client.models.generate_content(
-            model="gemini-2.5-flash-image",
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                response_modalities=["TEXT", "IMAGE"]
-            ),
-        )
+    token = os.getenv("HF_TOKEN")
 
-        if not response.candidates:
-            return {"error": "No candidates", "response": str(response)}
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
 
-        for part in response.candidates[0].content.parts:
-            if getattr(part, "inline_data", None):
-                return {
-                    "image": base64.b64encode(
-                        part.inline_data.data
-                    ).decode("utf-8")
-                }
+    response = requests.post(
+        API_URL,
+        headers=headers,
+        json={
+            "inputs": prompt
+        },
+        timeout=120,
+    )
 
-        return {
-            "error": "No image returned",
-            "response": str(response)
-        }
+    if response.status_code != 200:
+        raise Exception(response.text)
 
-    except Exception as e:
-        return {
-            "error": str(e)
-        }
+    image_bytes = response.content
+
+    return {
+        "image": base64.b64encode(
+            image_bytes
+        ).decode("utf-8")
+    }
