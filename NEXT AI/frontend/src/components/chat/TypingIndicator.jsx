@@ -4,19 +4,21 @@ function TypingIndicator() {
       style={{
         display: "flex",
         justifyContent: "flex-start",
-        marginBottom: "20px",
+        margin: "20px",
       }}
     >
       <div
         style={{
-          background: "#1f1f1f",
-          color: "#aaa",
-          padding: "14px 18px",
-          borderRadius: "12px",
-          fontSize: "16px",
+          display: "flex",
+          gap: "6px",
+          padding: "12px 18px",
+          borderRadius: "15px",
+          background: "#2b2b2b",
         }}
       >
-        🤖 Next AI is thinking...
+        <span className="dot"></span>
+        <span className="dot"></span>
+        <span className="dot"></span>
       </div>
     </div>
   );
