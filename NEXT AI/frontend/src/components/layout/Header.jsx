@@ -1,21 +1,26 @@
+import { useContext } from "react";
+import { ThemeContext } from "../../context/ThemeContext";
+
 function Header({
   selectedModel,
   setSelectedModel,
   webSearch,
   setWebSearch,
 }) {
+  const { darkMode, toggleTheme } = useContext(ThemeContext);
+
   return (
     <div
       style={{
-        height: "70px",
-        borderBottom: "1px solid #333",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "0 25px",
-        background: "#131314",
-        color: "white",
-      }}
+  height: "70px",
+  borderBottom: darkMode ? "1px solid #333" : "1px solid #ddd",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: "0 25px",
+  background: darkMode ? "#131314" : "#ffffff",
+  color: darkMode ? "white" : "black",
+}}
     >
       <h2>✦ Next AI</h2>
 
@@ -26,6 +31,19 @@ function Header({
           gap: "10px",
         }}
       >
+        <button
+  onClick={toggleTheme}
+style={{
+  background: darkMode ? "#2a2b32" : "#ffffff",
+  color: darkMode ? "white" : "black",
+  padding: "10px",
+  borderRadius: "8px",
+  border: darkMode ? "1px solid #444" : "1px solid #ccc",
+  fontSize: "15px",
+}}
+>
+  {darkMode ? "☀️" : "🌙"}
+</button>
         <button
           onClick={() => setWebSearch(!webSearch)}
           style={{
@@ -39,6 +57,7 @@ function Header({
         >
           🌐 {webSearch ? "Web ON" : "Web OFF"}
         </button>
+
 
         <select
           value={selectedModel}

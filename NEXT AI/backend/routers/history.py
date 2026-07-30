@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
+from fastapi import APIRouter, Depends, HTTPException  # type: ignore[import]
+from sqlmodel import Session, select  # type: ignore[import]
 
 from database import get_session
 from models import Chat, Message
@@ -41,10 +41,11 @@ def rename_chat(
     chat = session.get(Chat, chat_id)
 
     if not chat:
-        raise HTTPException(404, "Chat not found")
+        raise HTTPException(status_code=404, detail="Chat not found")
 
     chat.title = data.title
-    chat.updated_at = datetime.now().isoformat()
+    # store as datetime object
+    chat.updated_at = datetime.now()
 
     session.add(chat)
     session.commit()
@@ -62,7 +63,7 @@ def delete_chat(chat_id: str, session: Session = Depends(get_session)):
     chat = session.get(Chat, chat_id)
 
     if not chat:
-        raise HTTPException(404, "Chat not found")
+        raise HTTPException(status_code=404, detail="Chat not found")
 
     messages = session.exec(
         select(Message).where(Message.chat_id == chat_id)
@@ -90,6 +91,22 @@ def get_chats(session: Session = Depends(get_session)):
             "title": c.title,
             "created_at": c.created_at,
             "updated_at": c.updated_at,
+            "pinned": c.pinned,
         }
         for c in chats
     ]
+
+@router.patch("/chat/{chat_id}/pin")
+def pin_chat(chat_id: str, session: Session = Depends(get_session)):
+    chat = session.get(Chat, chat_id)
+
+    if not chat:
+        raise HTTPException(status_code=404, detail="Chat not found")
+
+    chat.pinned = not chat.pinned
+
+    session.add(chat)
+    session.commit()
+    session.refresh(chat)
+
+    return chat

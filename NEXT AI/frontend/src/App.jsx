@@ -17,6 +17,7 @@ function App() {
 
   const [chatId, setChatId] = useState(crypto.randomUUID());
   const [imagePath, setImagePath] = useState(null);
+  const [controller, setController] = useState(null);
 
   function newChat() {
     setMessages([]);
@@ -24,6 +25,19 @@ function App() {
     setImagePath(null);
     setChatId(crypto.randomUUID());
   }
+
+function editMessage(index) {
+  const userMessage = messages[index];
+
+  if (!userMessage || userMessage.sender !== "user") return;
+
+  setMessage(userMessage.text);
+
+  // Remove this user message and everything after it
+  setMessages(messages.slice(0, index + 1));
+
+  // Optional: keep the same chat id so conversation continues
+}
 
   async function openChat(id) {
     try {
@@ -44,9 +58,16 @@ function App() {
   }
 
   async function sendMessage() {
+    const abortController = new AbortController();
+    setController(abortController);
     console.log("sendMessage called");
 
-    if (!message.trim()) return;
+    if (!message.trim()) return;if (!message || !message.trim()) {
+    console.log("Message is empty");
+    return;
+    }
+
+    console.log("Sending:", message);
 
     const user = {
       sender: "user",
@@ -72,6 +93,7 @@ function App() {
       console.log("Sending request to:", `${API}/chat`);
 
       const response = await fetch(`${API}/chat`, {
+        signal: abortController.signal,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -116,10 +138,15 @@ function App() {
         });
       }
     } catch (err) {
-      console.error("Fetch Error:", err);
-    }
+  if (err.name === "AbortError") {
+    console.log("Generation stopped.");
+  } else {
+    console.error("Fetch Error:", err);
+  }
+}
 
     setLoading(false);
+    setController(null);
   }
   function exportChat() {
   if (messages.length === 0) {
@@ -150,23 +177,83 @@ function App() {
   URL.revokeObjectURL(url);
 }
 function stopGenerating() {
-  // We'll implement this later
+  if (controller) {
+    controller.abort();
+    setLoading(false);
+  }
 }
 
-function regenerateResponse() {
-  if (messages.length < 2) return;
-
+async function regenerateResponse() {
   const lastUser = [...messages]
     .reverse()
     .find((m) => m.sender === "user");
 
   if (!lastUser) return;
 
-  setMessage(lastUser.text);
+  setLoading(true);
 
-  setTimeout(() => {
-    sendMessage();
-  }, 0);
+  try {
+    const history = messages
+      .filter((m) => m !== messages[messages.length - 1])
+      .map((m) => ({
+        role: m.sender === "user" ? "user" : "assistant",
+        content: m.text,
+      }));
+
+    history.push({
+      role: "user",
+      content: lastUser.text,
+    });
+
+    const response = await fetch(`${API}/chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        model: selectedModel,
+        messages: history,
+        image: imagePath,
+        web_search: webSearch,
+      }),
+    });
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    let reply = "";
+
+    setMessages((prev) => [
+      ...prev.slice(0, -1),
+      {
+        sender: "ai",
+        text: "",
+      },
+    ]);
+
+    while (true) {
+      const { value, done } = await reader.read();
+
+      if (done) break;
+
+      reply += decoder.decode(value);
+
+      setMessages((prev) => {
+        const copy = [...prev];
+        copy[copy.length - 1].text = reply;
+        return copy;
+      });
+    }
+  } catch (err) {
+  if (err.name === "AbortError") {
+    console.log("Generation stopped.");
+  } else {
+    console.error(err);
+  }
+}
+
+  setLoading(false);
 }
 
   return (
@@ -182,17 +269,22 @@ function regenerateResponse() {
         exportChat={exportChat}
       />
 
-      <ChatWindow messages={messages} />
+      <ChatWindow 
+        messages={messages}
+        regenerateResponse={regenerateResponse}
+        editMessage={editMessage}
+       />
 
       {loading && <TypingIndicator />}
 
       <ChatInput
-        message={message}
-        setMessage={setMessage}
-        sendMessage={sendMessage}
-        loading={loading}
-        setImagePath={setImagePath}
-      />
+  message={message}
+  setMessage={setMessage}
+  sendMessage={sendMessage}
+  stopGenerating={stopGenerating}
+  loading={loading}
+  setImagePath={setImagePath}
+/>
     </MainLayout>
   );
 }

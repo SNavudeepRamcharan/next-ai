@@ -7,7 +7,13 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 
-function MessageBubble({ sender, text , time}) {
+function MessageBubble({
+  sender,
+  text,
+  time,
+  regenerateResponse,
+  onEdit,
+}) {
   const [copied, setCopied] = useState(false);
   
   const isUser = sender === "user";
@@ -15,16 +21,25 @@ function MessageBubble({ sender, text , time}) {
 const [disliked, setDisliked] = useState(false);
 
 function speakText() {
+  window.speechSynthesis.cancel();
+
   const speech = new SpeechSynthesisUtterance(text);
+
   speech.rate = 1;
   speech.pitch = 1;
   speech.volume = 1;
+
   window.speechSynthesis.speak(speech);
 }
 
 function copyMessage() {
   navigator.clipboard.writeText(text);
-  alert("Copied!");
+
+  setCopied(true);
+
+  setTimeout(() => {
+    setCopied(false);
+  }, 1500);
 }
 
   return (
@@ -47,7 +62,31 @@ function copyMessage() {
         }}
       >
         {isUser ? (
-          text
+          <>
+  <div>{text}</div>
+
+  <div
+    style={{
+      marginTop: "10px",
+      display: "flex",
+      justifyContent: "flex-end",
+    }}
+  >
+    <button
+      onClick={onEdit}
+      style={{
+        background: "#2d2d2d",
+        color: "white",
+        border: "none",
+        borderRadius: "8px",
+        padding: "6px 10px",
+        cursor: "pointer",
+      }}
+    >
+      ✏ Edit
+    </button>
+  </div>
+</>
         ) : (
           <>
             <ReactMarkdown
@@ -84,7 +123,7 @@ function copyMessage() {
                           zIndex: 10,
                         }}
                       >
-                        {copied ? "Copied!" : "Copy"}
+                        {copied ? "✅ Copied" : "📋 Copy"}
                       </button>
 
                       <SyntaxHighlighter
@@ -115,38 +154,89 @@ function copyMessage() {
               {text}
             </ReactMarkdown>
             <div
-              style={{
-                display: "flex",
-                gap: "8px",
-                marginTop: "10px",
-              }}
-            >
-              <button
-                onClick={() => {
-                  setLiked(true);
-                  setDisliked(false);
-                }}
-              >
-                👍
-              </button>
+  style={{
+    display: "flex",
+    gap: "10px",
+    marginTop: "12px",
+    alignItems: "center",
+  }}
+>
+  <button
+    onClick={() => {
+      setLiked(true);
+      setDisliked(false);
+    }}
+    style={{
+      background: liked ? "#16a34a" : "#2d2d2d",
+      color: "white",
+      border: "none",
+      borderRadius: "8px",
+      padding: "6px 10px",
+      cursor: "pointer",
+    }}
+  >
+    👍
+  </button>
 
-              <button
-                onClick={() => {
-                  setDisliked(true);
-                  setLiked(false);
-                }}
-              >
-                👎
-              </button>
+  <button
+    onClick={() => {
+      setDisliked(true);
+      setLiked(false);
+    }}
+    style={{
+      background: disliked ? "#dc2626" : "#2d2d2d",
+      color: "white",
+      border: "none",
+      borderRadius: "8px",
+      padding: "6px 10px",
+      cursor: "pointer",
+    }}
+  >
+    👎
+  </button>
 
-              <button onClick={copyMessage}>
-                📋
-              </button>
+  <button
+    onClick={copyMessage}
+    style={{
+      background: "#2d2d2d",
+      color: "white",
+      border: "none",
+      borderRadius: "8px",
+      padding: "6px 10px",
+      cursor: "pointer",
+    }}
+  >
+     {copied ? "✅ Copied" : "📋 Copy"}
+  </button>
 
-              <button onClick={speakText}>
-                🔊
-              </button>
-            </div>
+  <button
+    onClick={speakText}
+    style={{
+      background: "#2d2d2d",
+      color: "white",
+      border: "none",
+      borderRadius: "8px",
+      padding: "6px 10px",
+      cursor: "pointer",
+    }}
+  >
+    🔊 Read
+  </button>
+
+  <button
+  onClick={regenerateResponse}
+  style={{
+    background: "#2d2d2d",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    padding: "6px 10px",
+    cursor: "pointer",
+  }}
+>
+  🔄 Regenerate
+</button>
+</div>
           </>
         )}
         <div

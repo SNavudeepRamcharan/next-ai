@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { ThemeContext } from "../../context/ThemeContext";
 
 function ChatInput({
   message,
   setMessage,
   sendMessage,
+  stopGenerating,
   loading,
   setImagePath,
 }) {
   const API = import.meta.env.VITE_API_URL;
+  const { darkMode } = useContext(ThemeContext);
   const [selectedImage, setSelectedImage] = useState(null);
   const recognition =
   typeof window !== "undefined"
@@ -139,9 +142,10 @@ speech.start();
   return (
     <div
       style={{
-        padding: "20px",
-        borderTop: "1px solid #333",
-      }}
+  padding: "20px",
+  borderTop: darkMode ? "1px solid #333" : "1px solid #ddd",
+  background: darkMode ? "#343541" : "#f8f8f8",
+}}
     >
       {selectedImage && (
         <div
@@ -194,15 +198,15 @@ speech.start();
   onKeyDown={handleKeyDown}
   placeholder="Ask Next AI..."
   style={{
-    flex: 1,
-    height: "80px",
-    resize: "none",
-    padding: "10px",
-    borderRadius: "10px",
-    background: "#2b2b2b",
-    color: "white",
-    border: "none",
-  }}
+  flex: 1,
+  height: "80px",
+  resize: "none",
+  padding: "10px",
+  borderRadius: "10px",
+  background: darkMode ? "#2b2b2b" : "#ffffff",
+  color: darkMode ? "white" : "black",
+  border: darkMode ? "1px solid #444" : "1px solid #ccc",
+}}
 />
 
 <button
@@ -221,8 +225,7 @@ speech.start();
 </button>
 
 <button
-  onClick={sendMessage}
-  disabled={loading}
+  onClick={loading ? stopGenerating : sendMessage}
   style={{
     width: "120px",
     border: "none",
@@ -233,7 +236,7 @@ speech.start();
     cursor: "pointer",
   }}
 >
-  {loading ? "Thinking..." : "Send"}
+  {loading ? "⏹ Stop" : "📤 Send"}
 </button>
 <button
   onClick={generateImage}

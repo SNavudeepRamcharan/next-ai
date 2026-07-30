@@ -1,8 +1,15 @@
+import { useContext } from "react";
+import { ThemeContext } from "../../context/ThemeContext";
+
 import { useEffect, useState } from "react";
 
 function Sidebar({ newChat, openChat }) {
+  const { darkMode } = useContext(ThemeContext);
   const API = import.meta.env.VITE_API_URL;
+
   const [chats, setChats] = useState([]);
+  const [search, setSearch] = useState("");
+  const [menuOpen, setMenuOpen] = useState(null);
 
   async function loadChats() {
     try {
@@ -19,7 +26,7 @@ function Sidebar({ newChat, openChat }) {
 
     const interval = setInterval(loadChats, 2000);
 
-     return () => clearInterval(interval);
+    return () => clearInterval(interval);
   }, []);
 
   async function renameChat(chat) {
@@ -50,13 +57,32 @@ function Sidebar({ newChat, openChat }) {
     loadChats();
   }
 
+  // NEW FUNCTION
+  async function pinChat(id) {
+    await fetch(`${API}/history/chat/${id}/pin`, {
+      method: "PATCH",
+    });
+
+    loadChats();
+  }
+
+  const menuStyle = {
+    background: "#343541",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    padding: "8px",
+    cursor: "pointer",
+    textAlign: "left",
+  };
+
   return (
     <div
       style={{
         width: "270px",
         height: "100vh",
-        background: "#202123",
-        color: "white",
+        background: darkMode ? "#202123" : "#f3f3f3",
+        color: darkMode ? "white" : "black",
         display: "flex",
         flexDirection: "column",
       }}
@@ -87,6 +113,23 @@ function Sidebar({ newChat, openChat }) {
         ➕ New Chat
       </button>
 
+      <input
+        type="text"
+        placeholder="🔍 Search chats..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{
+          margin: "0 15px 15px",
+          padding: "10px",
+          borderRadius: "8px",
+          border: "none",
+          outline: "none",
+          background: darkMode ? "#232534" : "white",
+          color: darkMode ? "white" : "black",
+          border: darkMode ? "none" : "1px solid #ccc",
+        }}
+      />
+
       <div
         style={{
           flex: 1,
@@ -94,72 +137,105 @@ function Sidebar({ newChat, openChat }) {
           padding: "10px",
         }}
       >
-        {chats.map((chat) => (
-          <div
-            key={chat.id}
-            style={{
-              background: "#2a2b32",
-              borderRadius: "8px",
-              marginBottom: "10px",
-              padding: "10px",
-            }}
-          >
+        {chats
+          .filter((chat) =>
+            chat.title.toLowerCase().includes(search.toLowerCase())
+          )
+          .map((chat) => (
             <div
-              onClick={() => openChat(chat.id)}
+              key={chat.id}
               style={{
-                cursor: "pointer",
-                marginBottom: "8px",
-                fontWeight: "bold",
+                background: darkMode ? "#2a2b32" : "#ffffff",
+                color: darkMode ? "white" : "black",
+                border: darkMode ? "none" : "1px solid #ddd",
+                borderRadius: "8px",
+                marginBottom: "10px",
+                padding: "10px",
               }}
             >
-              💬 {chat.title}
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                gap: "8px",
-              }}
-            >
-              <button
-                onClick={() => renameChat(chat)}
+              <div
                 style={{
-                  flex: 1,
-                  background: "#3b82f6",
-                  border: "none",
-                  color: "white",
-                  padding: "6px",
-                  borderRadius: "6px",
-                  cursor: "pointer",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
-                ✏️ Rename
-              </button>
+                <div
+                  onClick={() => openChat(chat.id)}
+                  style={{
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                    flex: 1,
+                  }}
+                >
+                  💬 {chat.title}
+                </div>
 
-              <button
-                onClick={() => deleteChat(chat.id)}
-                style={{
-                  flex: 1,
-                  background: "#dc2626",
-                  border: "none",
-                  color: "white",
-                  padding: "6px",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                }}
-              >
-                🗑 Delete
-              </button>
+                <button
+                  onClick={() =>
+                    setMenuOpen(menuOpen === chat.id ? null : chat.id)
+                  }
+                  style={{
+                    background: "transparent",
+                    color: darkMode ? "white" : "black",
+                    border: "none",
+                    cursor: "pointer",
+                    fontSize: "18px",
+                  }}
+                >
+                  ⋮
+                </button>
+              </div>
+
+              {menuOpen === chat.id && (
+                <div
+                  style={{
+                    marginTop: "8px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "6px",
+                  }}
+                >
+                  <button
+                    onClick={() => {
+                      renameChat(chat);
+                      setMenuOpen(null);
+                    }}
+                    style={menuStyle}
+                  >
+                    ✏ Rename
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      pinChat(chat.id);
+                      setMenuOpen(null);
+                    }}
+                    style={menuStyle}
+                  >
+                    {chat.pinned ? "📍 Unpin" : "📌 Pin"}
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      deleteChat(chat.id);
+                      setMenuOpen(null);
+                    }}
+                    style={menuStyle}
+                  >
+                    🗑 Delete
+                  </button>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       <div
         style={{
           padding: "20px",
           borderTop: "1px solid #333",
-          color: "#888",
+          color: darkMode ? "#888" : "#555",
         }}
       >
         Next AI v2

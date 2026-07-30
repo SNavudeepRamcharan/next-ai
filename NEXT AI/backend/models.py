@@ -12,6 +12,8 @@ class Chat(SQLModel, table=True):
 
     updated_at: str
 
+    pinned: bool = Field(default=False)
+
 
 class Message(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
