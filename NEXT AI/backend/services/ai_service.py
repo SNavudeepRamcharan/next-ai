@@ -97,6 +97,11 @@ async def create_stream(
     else:
         api_messages.extend(messages)
 
+    print("=" * 50)
+    print("MODEL:", model)
+    print("MESSAGES:", api_messages)
+    print("=" * 50)
+
     return await client.chat.completions.create(
         model=model,
         messages=api_messages,
