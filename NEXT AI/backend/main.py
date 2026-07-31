@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,10 +23,11 @@ def startup():
     create_db()
 
 
+# Enable CORS to allow requests from your local frontend (localhost:5173) and deployed apps
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )

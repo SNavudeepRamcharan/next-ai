@@ -7,7 +7,7 @@ import ChatInput from "./components/chat/ChatInput";
 import TypingIndicator from "./components/chat/TypingIndicator";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 import ShareChat from "./pages/ShareChat";
 function App() {
   const API = import.meta.env.VITE_API_URL;
@@ -269,40 +269,51 @@ function App() {
     return <Navigate to="/login" replace />;
   }
   return (
-    <MainLayout
-      newChat={newChat}
-      openChat={openChat}
-    >
-      <Header
-        selectedModel={selectedModel}
-        setSelectedModel={setSelectedModel}
-        webSearch={webSearch}
-        setWebSearch={setWebSearch}
-        selectedPersona={selectedPersona}
-        setSelectedPersona={setSelectedPersona}
-      />
+    <Routes>
 
-      <ChatWindow
-        messages={messages}
-        regenerateResponse={regenerateResponse}
-        editMessage={editMessage}
-      />
-
-      {loading && <TypingIndicator />}
       <Route
         path="/share/:id"
         element={<ShareChat />}
       />
 
-      <ChatInput
-        message={message}
-        setMessage={setMessage}
-        sendMessage={sendMessage}
-        stopGenerating={stopGenerating}
-        loading={loading}
-        setImagePath={setImagePath}
+      <Route
+        path="*"
+        element={
+          <MainLayout
+            newChat={newChat}
+            openChat={openChat}
+          >
+            <Header
+              selectedModel={selectedModel}
+              setSelectedModel={setSelectedModel}
+              webSearch={webSearch}
+              setWebSearch={setWebSearch}
+              selectedPersona={selectedPersona}
+              setSelectedPersona={setSelectedPersona}
+            />
+
+            <ChatWindow
+              messages={messages}
+              regenerateResponse={regenerateResponse}
+              editMessage={editMessage}
+            />
+
+            {loading && <TypingIndicator />}
+
+            <ChatInput
+              message={message}
+              setMessage={setMessage}
+              sendMessage={sendMessage}
+              stopGenerating={stopGenerating}
+              loading={loading}
+              setImagePath={setImagePath}
+            />
+
+          </MainLayout>
+        }
       />
-    </MainLayout>
+
+    </Routes>
   );
 }
 
