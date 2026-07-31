@@ -15,7 +15,12 @@ function Sidebar({ newChat, openChat }) {
     try {
       const response = await fetch(`${API}/history/chats`);
       const data = await response.json();
-      setChats(data);
+      setChats(
+        data.sort((a, b) => {
+          if (a.pinned === b.pinned) return 0;
+          return a.pinned ? -1 : 1;
+        })
+      );
     } catch (err) {
       console.error(err);
     }
@@ -62,6 +67,22 @@ function Sidebar({ newChat, openChat }) {
     await fetch(`${API}/history/chat/${id}/pin`, {
       method: "PATCH",
     });
+
+    loadChats();
+  }
+  async function shareChat(id) {
+    const response = await fetch(`${API}/history/share/${id}`, {
+      method: "PUT",
+    });
+
+    const data = await response.json();
+
+    if (data.shared) {
+      navigator.clipboard.writeText(data.url);
+      alert("🔗 Share link copied!");
+    } else {
+      alert("Sharing disabled.");
+    }
 
     loadChats();
   }
@@ -168,7 +189,8 @@ function Sidebar({ newChat, openChat }) {
                     flex: 1,
                   }}
                 >
-                  💬 {chat.title}
+                  {chat.pinned ? "⭐ " : "💬 "}
+                  {chat.title}
                 </div>
 
                 <button
@@ -215,7 +237,15 @@ function Sidebar({ newChat, openChat }) {
                   >
                     {chat.pinned ? "📍 Unpin" : "📌 Pin"}
                   </button>
-
+                  <button
+                    onClick={() => {
+                      shareChat(chat.id);
+                      setMenuOpen(null);
+                    }}
+                    style={menuStyle}
+                  >
+                    🔗 Share
+                  </button>
                   <button
                     onClick={() => {
                       deleteChat(chat.id);

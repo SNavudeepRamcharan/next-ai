@@ -1,14 +1,25 @@
 import { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 
+import { auth } from "../../firebase";
+import { signOut } from "firebase/auth";
+
 function Header({
   selectedModel,
   setSelectedModel,
   webSearch,
   setWebSearch,
+  selectedPersona,
+  setSelectedPersona,
 }) {
   const { darkMode, toggleTheme } = useContext(ThemeContext);
-
+async function logout() {
+  try {
+    await signOut(auth);
+  } catch (err) {
+    console.error(err);
+  }
+}
   return (
     <div
       style={{
@@ -43,6 +54,19 @@ style={{
 }}
 >
   {darkMode ? "☀️" : "🌙"}
+</button>
+<button
+  onClick={logout}
+  style={{
+    background: "#dc2626",
+    color: "white",
+    border: "none",
+    padding: "10px 14px",
+    borderRadius: "8px",
+    cursor: "pointer",
+  }}
+>
+  🚪 Logout
 </button>
         <button
           onClick={() => setWebSearch(!webSearch)}
@@ -91,6 +115,23 @@ style={{
             Llama 4 Maverick
           </option>
         </select>
+        <select
+  value={selectedPersona}
+  onChange={(e) => setSelectedPersona(e.target.value)}
+  style={{
+    background: darkMode ? "#2a2b32" : "#ffffff",
+    color: darkMode ? "white" : "black",
+    padding: "10px",
+    borderRadius: "8px",
+  }}
+>
+  <option value="general">🤖 General</option>
+  <option value="coder">👨‍💻 Programmer</option>
+  <option value="teacher">👨‍🏫 Teacher</option>
+  <option value="doctor">🩺 Doctor</option>
+  <option value="writer">🎨 Writer</option>
+  <option value="friend">😂 Friend</option>
+</select>
       </div>
     </div>
   );

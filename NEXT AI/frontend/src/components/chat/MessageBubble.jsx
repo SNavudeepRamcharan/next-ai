@@ -15,78 +15,80 @@ function MessageBubble({
   onEdit,
 }) {
   const [copied, setCopied] = useState(false);
-  
+
   const isUser = sender === "user";
   const [liked, setLiked] = useState(false);
-const [disliked, setDisliked] = useState(false);
+  const [disliked, setDisliked] = useState(false);
 
-function speakText() {
-  window.speechSynthesis.cancel();
+  function speakText() {
+    window.speechSynthesis.cancel();
 
-  const speech = new SpeechSynthesisUtterance(text);
+    const speech = new SpeechSynthesisUtterance(text);
 
-  speech.rate = 1;
-  speech.pitch = 1;
-  speech.volume = 1;
+    speech.rate = 1;
+    speech.pitch = 1;
+    speech.volume = 1;
 
-  window.speechSynthesis.speak(speech);
-}
+    window.speechSynthesis.speak(speech);
+  }
 
-function copyMessage() {
-  navigator.clipboard.writeText(text);
+  function copyMessage() {
+    navigator.clipboard.writeText(text);
 
-  setCopied(true);
+    setCopied(true);
 
-  setTimeout(() => {
-    setCopied(false);
-  }, 1500);
-}
+    setTimeout(() => {
+      setCopied(false);
+    }, 1500);
+  }
 
   return (
     <div
       style={{
         display: "flex",
-        justifyContent: isUser ? "flex-end" : "flex-start",
+        justifyContent: "center",
         marginBottom: "20px",
       }}
     >
       <div
         style={{
-          maxWidth: "75%",
+          width: "100%",
+          maxWidth: "900px",
           padding: "16px",
           borderRadius: "12px",
           background: isUser ? "#2563eb" : "#1f1f1f",
           color: "white",
           lineHeight: "1.8",
-          overflowX: "auto",
+          overflow: "hidden",
+          wordBreak: "break-word",
         }}
       >
         {isUser ? (
           <>
-  <div>{text}</div>
+            <div>{text}</div>
 
-  <div
-    style={{
-      marginTop: "10px",
-      display: "flex",
-      justifyContent: "flex-end",
-    }}
-  >
-    <button
-      onClick={onEdit}
-      style={{
-        background: "#2d2d2d",
-        color: "white",
-        border: "none",
-        borderRadius: "8px",
-        padding: "6px 10px",
-        cursor: "pointer",
-      }}
-    >
-      ✏ Edit
-    </button>
-  </div>
-</>
+            <div
+              style={{
+                marginTop: "10px",
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button
+                onClick={onEdit}
+                style={{
+                  background: "#2d2d2d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "6px 10px",
+                  cursor: "pointer",
+                }}
+              >
+                ✏ Edit
+              </button>
+            </div>
+          </>
         ) : (
           <>
             <ReactMarkdown
@@ -130,6 +132,11 @@ function copyMessage() {
                         style={oneDark}
                         language={match[1]}
                         PreTag="div"
+                        customStyle={{
+                          overflowX: "auto",
+                          borderRadius: "10px",
+                          maxWidth: "100%",
+                        }}
                         {...props}
                       >
                         {String(children).replace(/\n$/, "")}
@@ -154,101 +161,101 @@ function copyMessage() {
               {text}
             </ReactMarkdown>
             <div
-  style={{
-    display: "flex",
-    gap: "10px",
-    marginTop: "12px",
-    alignItems: "center",
-  }}
->
-  <button
-    onClick={() => {
-      setLiked(true);
-      setDisliked(false);
-    }}
-    style={{
-      background: liked ? "#16a34a" : "#2d2d2d",
-      color: "white",
-      border: "none",
-      borderRadius: "8px",
-      padding: "6px 10px",
-      cursor: "pointer",
-    }}
-  >
-    👍
-  </button>
+              style={{
+                display: "flex",
+                gap: "10px",
+                marginTop: "12px",
+                alignItems: "center",
+              }}
+            >
+              <button
+                onClick={() => {
+                  setLiked(true);
+                  setDisliked(false);
+                }}
+                style={{
+                  background: liked ? "#16a34a" : "#2d2d2d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "6px 10px",
+                  cursor: "pointer",
+                }}
+              >
+                👍
+              </button>
 
-  <button
-    onClick={() => {
-      setDisliked(true);
-      setLiked(false);
-    }}
-    style={{
-      background: disliked ? "#dc2626" : "#2d2d2d",
-      color: "white",
-      border: "none",
-      borderRadius: "8px",
-      padding: "6px 10px",
-      cursor: "pointer",
-    }}
-  >
-    👎
-  </button>
+              <button
+                onClick={() => {
+                  setDisliked(true);
+                  setLiked(false);
+                }}
+                style={{
+                  background: disliked ? "#dc2626" : "#2d2d2d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "6px 10px",
+                  cursor: "pointer",
+                }}
+              >
+                👎
+              </button>
 
-  <button
-    onClick={copyMessage}
-    style={{
-      background: "#2d2d2d",
-      color: "white",
-      border: "none",
-      borderRadius: "8px",
-      padding: "6px 10px",
-      cursor: "pointer",
-    }}
-  >
-     {copied ? "✅ Copied" : "📋 Copy"}
-  </button>
+              <button
+                onClick={copyMessage}
+                style={{
+                  background: "#2d2d2d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "6px 10px",
+                  cursor: "pointer",
+                }}
+              >
+                {copied ? "✅ Copied" : "📋 Copy"}
+              </button>
 
-  <button
-    onClick={speakText}
-    style={{
-      background: "#2d2d2d",
-      color: "white",
-      border: "none",
-      borderRadius: "8px",
-      padding: "6px 10px",
-      cursor: "pointer",
-    }}
-  >
-    🔊 Read
-  </button>
+              <button
+                onClick={speakText}
+                style={{
+                  background: "#2d2d2d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "6px 10px",
+                  cursor: "pointer",
+                }}
+              >
+                🔊 Read
+              </button>
 
-  <button
-  onClick={regenerateResponse}
-  style={{
-    background: "#2d2d2d",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    padding: "6px 10px",
-    cursor: "pointer",
-  }}
->
-  🔄 Regenerate
-</button>
-</div>
+              <button
+                onClick={regenerateResponse}
+                style={{
+                  background: "#2d2d2d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "6px 10px",
+                  cursor: "pointer",
+                }}
+              >
+                🔄 Regenerate
+              </button>
+            </div>
           </>
         )}
         <div
-  style={{
-    fontSize: "11px",
-    color: "#aaa",
-    textAlign: "right",
-    marginTop: "8px",
-  }}
->
-  {time}
-</div>
+          style={{
+            fontSize: "11px",
+            color: "#aaa",
+            textAlign: "right",
+            marginTop: "8px",
+          }}
+        >
+          {time}
+        </div>
       </div>
     </div>
   );
