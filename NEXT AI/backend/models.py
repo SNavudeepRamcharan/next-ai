@@ -14,6 +14,8 @@ class Chat(SQLModel, table=True):
 
     pinned: bool = Field(default=False)
 
+    shared: bool = Field(default=False)
+
 
 class Message(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)

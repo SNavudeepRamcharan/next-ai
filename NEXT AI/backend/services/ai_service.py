@@ -59,7 +59,7 @@ async def create_stream(
                 "```python\n"
                 'print("Hello")\n'
                 "```\n"
-                "Never output plain code without markdown fences."                
+                "Never output plain code without markdown fences."
             ),
         }
     ]
@@ -67,7 +67,6 @@ async def create_stream(
     if image_path:
 
         extension = image_path.split(".")[-1]
-
         image64 = image_to_base64(image_path)
 
         for i, msg in enumerate(messages):
@@ -99,16 +98,14 @@ async def create_stream(
         api_messages.extend(messages)
 
     return await client.chat.completions.create(
-    model=model,
-    messages=api_messages,
-
-    tools=[
-        {
-            "type": "openrouter:web_search"
-        }
-    ] if web_search else None,
-
-    temperature=0.7,
-    max_tokens=2000,
-    stream=True,
-)
+        model=model,
+        messages=api_messages,
+        tools=[
+            {
+                "type": "openrouter:web_search"
+            }
+        ] if web_search else None,
+        temperature=0.4,
+        max_tokens=2500,
+        stream=True,
+    )

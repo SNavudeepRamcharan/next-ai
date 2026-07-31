@@ -115,3 +115,15 @@ def rename_chat(
 
     session.add(chat)
     session.commit()
+
+@staticmethod
+def toggle_pin(session, chat_id: str):
+    chat = session.get(Chat, chat_id)
+
+    if chat:
+        chat.pinned = not chat.pinned
+        session.add(chat)
+        session.commit()
+        session.refresh(chat)
+
+    return chat

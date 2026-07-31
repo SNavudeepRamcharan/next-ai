@@ -110,3 +110,76 @@ def pin_chat(chat_id: str, session: Session = Depends(get_session)):
     session.refresh(chat)
 
     return chat
+
+@router.put("/history/pin/{chat_id}")
+def toggle_pin(
+    chat_id: str,
+    session: Session = Depends(get_session),
+):
+    chat = ChatRepository.toggle_pin(
+        session=session,
+        chat_id=chat_id,
+    )
+
+    if not chat:
+        raise HTTPException(
+            status_code=404,
+            detail="Chat not found",
+        )
+
+    return chat
+
+@router.get("/history/share/{chat_id}")
+def get_shared_chat(
+    chat_id: str,
+    session: Session = Depends(get_session),
+):
+    chat = ChatRepository.get_chat(session, chat_id)
+
+    if not chat:
+        raise HTTPException(
+            status_code=404,
+            detail="Chat not found",
+        )
+
+    if not chat.shared:
+        raise HTTPException(
+            status_code=403,
+            detail="This chat is not shared.",
+        )
+
+    messages = ChatRepository.get_messages(
+        session=session,
+        chat_id=chat_id,
+    )
+
+    return {
+        "chat": chat,
+        "messages": messages,
+    }
+
+@router.put("/history/share/{chat_id}")
+def toggle_share(
+    chat_id: str,
+    session: Session = Depends(get_session),
+):
+    chat = ChatRepository.get_chat(session, chat_id)
+
+    if not chat:
+        raise HTTPException(
+            status_code=404,
+            detail="Chat not found",
+        )
+
+    chat.shared = not chat.shared
+
+    session.add(chat)
+    session.commit()
+    session.refresh(chat)
+
+    return {
+        "shared": chat.shared,
+        "url": f"http://localhost:5173/share/{chat.id}"
+        if chat.shared
+        else None,
+    }

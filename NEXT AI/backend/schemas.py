@@ -27,6 +27,7 @@ class ChatRequest(BaseModel):
 
     web_search: bool = False
 
+    persona: str = "general"
 # ==========================================
 # Chat History
 # ==========================================

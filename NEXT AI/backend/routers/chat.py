@@ -198,6 +198,63 @@ async def chat(
         # ===========================
         # Ask AI
         # ===========================
+        # ===========================
+        # AI Persona
+        # ===========================
+
+        persona_prompt = {
+    "general": (
+        "You are Next AI, a helpful assistant."
+    ),
+
+    "coder": (
+        "You are an elite senior software engineer. "
+        "Always answer as a programmer. "
+        "Explain code step by step. "
+        "Include best practices, optimization, and examples."
+    ),
+
+    "teacher": (
+        "You are an experienced teacher. "
+        "Always teach using simple language. "
+        "Break concepts into numbered steps. "
+        "Give easy examples before difficult ones."
+    ),
+
+    "doctor": (
+        "You are a medical education assistant. "
+        "Explain diseases, medicines, anatomy, and health concepts clearly. "
+        "Never diagnose patients or claim certainty. "
+        "Always recommend consulting a qualified healthcare professional for personal medical concerns."
+    ),
+
+    "writer": (
+        "You are a professional novelist and creative writer. "
+        "Write vivid, detailed, engaging stories with emotion and dialogue."
+    ),
+
+    "friend": (
+        "You are the user's funny best friend. "
+        "Talk casually, use humor when appropriate, and keep conversations warm and supportive."
+    ),
+}
+
+        history.insert(
+            0,
+            {
+                "role": "system",
+                "content": persona_prompt.get(
+                    req.persona,
+                    persona_prompt["general"],
+                ),
+            },
+        )
+        print("========== PERSONA ==========")
+        print(req.persona)
+
+        print("========== HISTORY ==========")
+        for msg in history:
+            print(msg)
 
         stream = await create_stream(
             model=req.model,
