@@ -1,46 +1,12 @@
 import os
-import base64
-
 from dotenv import load_dotenv
-from openai import OpenAI
+from google import genai
 
 load_dotenv()
-print("OPENROUTER KEY =", os.getenv("OPENROUTER_API_KEY"))
 
-client = OpenAI(
-    api_key=os.getenv("OPENROUTER_API_KEY"),
-    base_url="https://openrouter.ai/api/v1",
+client = genai.Client(
+    api_key=os.getenv("GEMINI_API_KEY")
 )
-
-
-def image_to_base64(image_path: str):
-    with open(image_path, "rb") as f:
-        return base64.b64encode(f.read()).decode()
-
-
-async def generate_chat_title(message: str):
-
-    response = await client.chat.completions.create(
-        model="openai/gpt-4.1-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "Generate a short chat title."
-                    "Return ONLY the title."
-                    "Maximum 5 words."
-                ),
-            },
-            {
-                "role": "user",
-                "content": message,
-            },
-        ],
-        max_tokens=20,
-        temperature=0.2,
-    )
-
-    return response.choices[0].message.content.strip()
 
 
 async def create_stream(
@@ -49,68 +15,14 @@ async def create_stream(
     image_path=None,
     web_search=False,
 ):
+    prompt = ""
 
-    api_messages = [
-        {
-            "role": "system",
-            "content": (
-                "Always answer using proper GitHub Markdown.\n"
-                "For ALL programming code, ALWAYS use fenced code blocks with the language name.\n"
-                "Example:\n"
-                "```python\n"
-                'print("Hello")\n'
-                "```\n"
-                "Never output plain code without markdown fences."
-            ),
-        }
-    ]
+    for msg in messages:
+        prompt += f"{msg['role']}:\n{msg['content']}\n\n"
 
-    if image_path:
-
-        extension = image_path.split(".")[-1]
-        image64 = image_to_base64(image_path)
-
-        for i, msg in enumerate(messages):
-
-            if i == len(messages) - 1 and msg["role"] == "user":
-
-                api_messages.append(
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": msg["content"],
-                            },
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"data:image/{extension};base64,{image64}"
-                                },
-                            },
-                        ],
-                    }
-                )
-
-            else:
-                api_messages.append(msg)
-
-    else:
-        api_messages.extend(messages)
-
-    print("=" * 50)
-    print("KEY:", os.getenv("OPENROUTER_API_KEY"))
-    print("MODEL:", model)
-    print("MESSAGES:", api_messages)
-    print("=" * 50)
-    print("MAX TOKENS =", 2000)
-    print("MODEL SENT =", model)
-    print("AI_SERVICE VERSION = 31-JUL-TEST")
-
-    return client.chat.completions.create(
-        model="openai/gpt-4.1-mini",
-        messages=api_messages,
-        temperature=0.7,
-        max_tokens=2000,
-        stream=True,
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt,
     )
+
+    return response.text

@@ -264,23 +264,9 @@ async def chat(
         )
 
         async def generate():
+            full_reply = stream
 
-            full_reply = ""
-
-            async for chunk in stream:
-
-                if (
-                    chunk.choices
-                    and len(chunk.choices) > 0
-                    and chunk.choices[0].delta
-                ):
-
-                    content = chunk.choices[0].delta.content
-
-                    if content:
-
-                        full_reply += content
-                        yield content
+            yield full_reply
 
             ChatRepository.add_message(
                 session=session,
