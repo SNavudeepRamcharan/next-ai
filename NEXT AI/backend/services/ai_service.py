@@ -105,6 +105,7 @@ async def create_stream(
     print("=" * 50)
     print("MAX TOKENS =", 2000)
     print("MODEL SENT =", model)
+    print("AI_SERVICE VERSION = 31-JUL-TEST")
 
     return client.chat.completions.create(
         model=model,
