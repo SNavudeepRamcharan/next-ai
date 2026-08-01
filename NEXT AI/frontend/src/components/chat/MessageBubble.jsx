@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { ThemeContext } from "../../context/ThemeContext";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -15,6 +16,7 @@ function MessageBubble({
   onEdit,
 }) {
   const [copied, setCopied] = useState(false);
+  const { darkMode } = useContext(ThemeContext);
 
   const isUser = sender === "user";
   const [liked, setLiked] = useState(false);
@@ -56,8 +58,9 @@ function MessageBubble({
           maxWidth: "900px",
           padding: "16px",
           borderRadius: "12px",
-          background: isUser ? "#2563eb" : "#1f1f1f",
-          color: "white",
+          background: isUser ? "var(--accent)" : "var(--card)",
+          color: "var(--text)",
+          border: "1px solid var(--border)",
           lineHeight: "1.8",
           overflow: "hidden",
           wordBreak: "break-word",
@@ -77,9 +80,9 @@ function MessageBubble({
               <button
                 onClick={onEdit}
                 style={{
-                  background: "#2d2d2d",
-                  color: "white",
-                  border: "none",
+                  background: "var(--header)",
+                  color: "var(--text)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                   padding: "6px 10px",
                   cursor: "pointer",
@@ -117,8 +120,8 @@ function MessageBubble({
                           right: "10px",
                           top: "10px",
                           border: "none",
-                          background: "#333",
-                          color: "white",
+                          background: "var(--bg)",
+                          color: "var(--text)",
                           padding: "6px 12px",
                           borderRadius: "6px",
                           cursor: "pointer",
@@ -147,7 +150,8 @@ function MessageBubble({
                       className={className}
                       {...props}
                       style={{
-                        background: "#333",
+                        background: "var(--bg)",
+                        color: "var(--text)",
                         padding: "2px 6px",
                         borderRadius: "5px",
                       }}
@@ -174,9 +178,9 @@ function MessageBubble({
                   setDisliked(false);
                 }}
                 style={{
-                  background: liked ? "#16a34a" : "#2d2d2d",
-                  color: "white",
-                  border: "none",
+                  background: liked ? "#16a34a" : "var(--header)",
+                  color: "var(--text)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                   padding: "6px 10px",
                   cursor: "pointer",
@@ -191,9 +195,9 @@ function MessageBubble({
                   setLiked(false);
                 }}
                 style={{
-                  background: disliked ? "#dc2626" : "#2d2d2d",
-                  color: "white",
-                  border: "none",
+                  background: disliked ? "#dc2626" : "var(--header)",
+                  color: "var(--text)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                   padding: "6px 10px",
                   cursor: "pointer",
@@ -205,9 +209,9 @@ function MessageBubble({
               <button
                 onClick={copyMessage}
                 style={{
-                  background: "#2d2d2d",
-                  color: "white",
-                  border: "none",
+                  background: "var(--header)",
+                  color: "var(--text)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                   padding: "6px 10px",
                   cursor: "pointer",
@@ -219,9 +223,9 @@ function MessageBubble({
               <button
                 onClick={speakText}
                 style={{
-                  background: "#2d2d2d",
-                  color: "white",
-                  border: "none",
+                  background: "var(--header)",
+                  color: "var(--text)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                   padding: "6px 10px",
                   cursor: "pointer",
@@ -233,9 +237,9 @@ function MessageBubble({
               <button
                 onClick={regenerateResponse}
                 style={{
-                  background: "#2d2d2d",
-                  color: "white",
-                  border: "none",
+                  background: "var(--header)",
+                  color: "var(--text)",
+                  border: "1px solid var(--border)",
                   borderRadius: "8px",
                   padding: "6px 10px",
                   cursor: "pointer",
@@ -249,7 +253,8 @@ function MessageBubble({
         <div
           style={{
             fontSize: "11px",
-            color: "#aaa",
+            color: "var(--text)",
+            opacity: 0.6,
             textAlign: "right",
             marginTop: "8px",
           }}

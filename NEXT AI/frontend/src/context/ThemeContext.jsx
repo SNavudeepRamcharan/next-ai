@@ -2,25 +2,32 @@ import { createContext, useEffect, useState } from "react";
 
 export const ThemeContext = createContext();
 
-export function ThemeProvider({ children }) {
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem("theme") === "dark";
-  });
+export default function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme") || "dark"
+  );
 
   useEffect(() => {
-    localStorage.setItem(
-      "theme",
-      darkMode ? "dark" : "light"
-    );
-  }, [darkMode]);
+    document.body.className = "";
+    document.body.classList.add(theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const darkMode = theme !== "light";
 
   function toggleTheme() {
-    setDarkMode((prev) => !prev);
+    if (theme === "dark") {
+      setTheme("light");
+    } else {
+      setTheme("dark");
+    }
   }
 
   return (
     <ThemeContext.Provider
       value={{
+        theme,
+        setTheme,
         darkMode,
         toggleTheme,
       }}

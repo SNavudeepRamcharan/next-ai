@@ -1,8 +1,6 @@
 import { useEffect, useRef } from "react";
 import MessageBubble from "./MessageBubble";
-
-import { useContext } from "react";
-import { ThemeContext } from "../../context/ThemeContext";
+import "./ChatWindow.css";
 
 function ChatWindow({
   messages,
@@ -10,7 +8,6 @@ function ChatWindow({
   regenerateResponse,
 }) {
   const bottomRef = useRef(null);
-  const { darkMode } = useContext(ThemeContext);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({
@@ -19,27 +16,14 @@ function ChatWindow({
   }, [messages]);
 
   return (
-    <div
-      style={{
-        flex: 1,
-        padding: "20px",
-        overflowY: "auto",
-        background: darkMode ? "#343541" : "#ffffff",
-      }}
-    >
+    <div className="chat-window">
       {messages.length === 0 ? (
-        <div
-          style={{
-            background: darkMode ? "#343541" : "#ffffff",
-            color: darkMode ? "#aaa" : "#555",
-            textAlign: "center",
-            marginTop: "100px",
-            fontSize: "22px",
-          }}
-        >
-          👋 Welcome to <strong>Next AI</strong>
-          <br />
-          Ask me anything!
+        <div className="welcome-screen">
+          <div className="welcome-icon">🤖</div>
+
+          <h1>Welcome to Next AI</h1>
+
+          <p>How can I help you today?</p>
         </div>
       ) : (
         <>
@@ -53,7 +37,8 @@ function ChatWindow({
               onEdit={() => editMessage(index)}
             />
           ))}
-          <div ref={bottomRef} />
+
+          <div ref={bottomRef}></div>
         </>
       )}
     </div>

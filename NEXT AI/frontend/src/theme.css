@@ -1,0 +1,114 @@
+:root{
+  --bg:#131314;
+  --card:#1e1f20;
+  --header:#202124;
+  --text:white;
+  --border:#333;
+  --accent:#2563eb;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  transition:.35s;
+}
+
+/* Dark */
+.dark{
+  --bg:#131314;
+  --card:#1f1f1f;
+  --header:#202124;
+  --text:white;
+  --border:#333;
+  --accent:#2563eb;
+}
+
+/* Light */
+.light{
+  --bg:#f5f5f5;
+  --card:white;
+  --header:white;
+  --text:#111;
+  --border:#ddd;
+  --accent:#2563eb;
+}
+
+/* Ocean */
+.ocean{
+  --bg:#06283D;
+  --card:#1363DF;
+  --header:#0B4F6C;
+  --text:white;
+  --border:#47B5FF;
+  --accent:#47B5FF;
+}
+
+/* Forest */
+.forest{
+  --bg:#1B4332;
+  --card:#2D6A4F;
+  --header:#081C15;
+  --text:white;
+  --border:#52B788;
+  --accent:#95D5B2;
+}
+
+/* Purple */
+.purple{
+  --bg:#240046;
+  --card:#5A189A;
+  --header:#3C096C;
+  --text:white;
+  --border:#9D4EDD;
+  --accent:#C77DFF;
+}
+
+/* Sakura */
+.sakura{
+  --bg:#FFF0F6;
+  --card:#FFD6E7;
+  --header:#FFC2D1;
+  --text:#4A2C2A;
+  --border:#FF8FAB;
+  --accent:#FF5D8F;
+}
+
+/* Coffee */
+.coffee{
+  --bg:#38220F;
+  --card:#634832;
+  --header:#4B3621;
+  --text:#FFF5E6;
+  --border:#967259;
+  --accent:#C8A27C;
+}
+
+/* AMOLED */
+.amoled{
+  --bg:black;
+  --card:#0b0b0b;
+  --header:black;
+  --text:white;
+  --border:#222;
+  --accent:#0EA5E9;
+}
+
+/* Cyberpunk */
+.cyberpunk{
+  --bg:#090909;
+  --card:#181818;
+  --header:#111;
+  --text:#00FFFF;
+  --border:#FF00FF;
+  --accent:#FF00FF;
+}
+
+/* Dracula */
+.dracula{
+  --bg:#282A36;
+  --card:#44475A;
+  --header:#282A36;
+  --text:#F8F8F2;
+  --border:#6272A4;
+  --accent:#BD93F9;
+}

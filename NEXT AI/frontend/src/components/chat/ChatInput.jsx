@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
+import "./ChatInput.css";
 
 function ChatInput({
   message,
@@ -142,7 +143,7 @@ function ChatInput({
   return (
     <div
       style={{
-        padding: "20px",
+        padding: "14px",
         borderTop: darkMode ? "1px solid #333" : "1px solid #ddd",
         background: darkMode ? "#343541" : "#f8f8f8",
       }}
@@ -165,21 +166,20 @@ function ChatInput({
         </div>
       )}
 
-      <div
-        style={{
-          display: "flex",
-          gap: "10px",
-          alignItems: "center",
-        }}
-      >
+      <div className="chat-box">
         <label
           style={{
-            background: "#444",
-            color: "white",
-            padding: "12px",
-            borderRadius: "10px",
+            width: "56px",
+            height: "56px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "var(--card)",
+            color: "var(--text)",
+            border: "1px solid var(--border)",
+            borderRadius: "16px",
             cursor: "pointer",
-            fontSize: "20px",
+            fontSize: "22px",
           }}
         >
           📎
@@ -194,72 +194,78 @@ function ChatInput({
 
         <textarea
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => {
+            setMessage(e.target.value);
+
+            e.target.style.height = "0px";
+            e.target.style.height = e.target.scrollHeight + "px";
+          }}
           onKeyDown={handleKeyDown}
           placeholder="Ask Next AI..."
+          rows={1}
           style={{
-            flex: 1,
-            height: "80px",
+            flex: "1 1 auto",
+            minWidth: 0,
+            minHeight: "55px",
+            maxHeight: "150px",
             resize: "none",
-            padding: "10px",
-            borderRadius: "10px",
-            background: darkMode ? "#2b2b2b" : "#ffffff",
-            color: darkMode ? "white" : "black",
-            border: darkMode ? "1px solid #444" : "1px solid #ccc",
+            overflowY: "auto",
+            padding: "15px",
+            borderRadius: "18px",
+            background: "var(--card)",
+            color: "var(--text)",
+            border: "1px solid var(--border)",
+            fontSize: "16px",
           }}
         />
+        <div className="chat-actions">
+          <button
+            onClick={startVoice}
+            style={{
+              height: "56px",
+              width: "56px",
+              border: "none",
+              borderRadius: "16px",
+              background: "#2563eb",
+              color: "white",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            🎤
+          </button>
 
-        <button
-          onClick={startVoice}
-          style={{
-            width: "60px",
-            border: "none",
-            borderRadius: "10px",
-            background: "#10a37f",
-            color: "white",
-            cursor: "pointer",
-            fontSize: "20px",
-          }}
-        >
-          🎤
-        </button>
-
-        <button
-          onClick={loading ? stopGenerating : sendMessage}
-          style={{
-            width: "120px",
-            border: "none",
-            borderRadius: "10px",
-            background: "#2563eb",
-            color: "white",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
-        >
-          {loading ? "⏹ Stop" : "📤 Send"}
-        </button>
-        <button
-          onClick={generateImage}
-          style={{
-            width: "140px",
-            border: "none",
-            borderRadius: "10px",
-            background: "#9333ea",
-            color: "white",
-            cursor: "pointer",
-          }}
-        >
-          🎨 Generate
-        </button>
-        <button
-          onClick={() => {
-            alert("BUTTON CLICKED");
-            console.log("BUTTON CLICKED");
-            sendMessage();
-          }}
-        >
-          📤 Send
-        </button>
+          <button
+            onClick={loading ? stopGenerating : sendMessage}
+            style={{
+              height: "56px",
+              padding: "0 18px",
+              border: "none",
+              borderRadius: "16px",
+              background: "#2563eb",
+              color: "white",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            {loading ? "⏹ Stop" : "📤 Send"}
+          </button>
+          <button
+            onClick={generateImage}
+            style={{
+              height: "56px",
+              padding: "0 18px",
+              border: "none",
+              borderRadius: "16px",
+              background: "#9333ea",
+              color: "white",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            🎨 Generate
+          </button>
+        </div>
       </div>
     </div>
   );

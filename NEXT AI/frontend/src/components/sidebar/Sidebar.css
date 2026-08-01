@@ -1,0 +1,135 @@
+.sidebar{
+    width:300px;
+    background:var(--header);
+    border-right:1px solid var(--border);
+    display:flex;
+    flex-direction:column;
+    transition:.3s;
+}
+
+.sidebar-header{
+    padding:24px;
+    font-size:34px;
+    font-weight:700;
+}
+
+.new-chat{
+    margin:18px;
+    background:linear-gradient(90deg,#10a37f,#18c29c);
+    color:white;
+    border:none;
+    border-radius:16px;
+    padding:16px;
+    cursor:pointer;
+    font-size:20px;
+    transition:.25s;
+}
+
+.new-chat:hover{
+    transform:translateY(-2px);
+}
+
+.search-box{
+    margin:0 18px 18px;
+    padding:14px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--text);
+}
+
+.chat-list{
+    flex:1;
+    overflow:auto;
+    padding:10px;
+}
+
+.chat-item{
+    background:var(--card);
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:12px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.chat-item:hover{
+    transform:translateX(6px);
+    border-left:4px solid var(--accent);
+}
+
+.sidebar-footer{
+    padding:18px;
+    border-top:1px solid var(--border);
+    opacity:.7;
+}
+.sidebar{
+    width:270px;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    background:var(--card);
+    color:var(--text);
+    border-right:1px solid var(--border);
+}
+
+.sidebar-header{
+    padding:20px;
+    font-size:28px;
+    font-weight:bold;
+    border-bottom:1px solid var(--border);
+}
+
+.new-chat{
+    margin:15px;
+    padding:13px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#10a37f,#0d8f6d);
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:600;
+    transition:.25s;
+}
+
+.new-chat:hover{
+    transform:translateY(-2px);
+}
+
+.search-box{
+    margin:0 15px 15px;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--text);
+    outline:none;
+}
+
+.chat-list{
+    flex:1;
+    overflow-y:auto;
+    padding:10px;
+}
+
+.chat-item{
+    background:var(--card);
+    color:var(--text);
+    border:1px solid var(--border);
+    border-radius:14px;
+    margin-bottom:10px;
+    padding:12px;
+    transition:.25s;
+}
+
+.chat-item:hover{
+    transform:translateX(4px);
+    border-color:var(--accent);
+}
+
+.sidebar-footer{
+    padding:20px;
+    border-top:1px solid var(--border);
+    color:#888;
+}
