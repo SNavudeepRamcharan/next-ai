@@ -63,10 +63,10 @@ function App() {
   }
 
   async function sendMessage() {
-  alert("sendMessage called");
-  console.log("sendMessage called");
+    alert("sendMessage called");
+    console.log("sendMessage called");
 
-  const abortController = new AbortController();
+    const abortController = new AbortController();
 
     if (!message.trim()) return; if (!message || !message.trim()) {
       console.log("Message is empty");
@@ -100,7 +100,7 @@ function App() {
 
       alert("About to call /chat");
 
-const response = await fetch(`${API}/chat`, {
+      const response = await fetch(`${API}/chat`, {
         signal: abortController.signal,
         method: "POST",
         headers: {
@@ -139,7 +139,11 @@ const response = await fetch(`${API}/chat`, {
 
         if (done) break;
 
-        reply += decoder.decode(value);
+        const chunk = decoder.decode(value);
+
+        console.log("CHUNK =", chunk);
+
+        reply += chunk;
 
         setMessages((prev) => {
           const copy = [...prev];
