@@ -11,6 +11,7 @@ import { Navigate, Routes, Route } from "react-router-dom";
 import ShareChat from "./pages/ShareChat";
 function App() {
   const API = import.meta.env.VITE_API_URL;
+  console.log("API =", API);
   const { user, loading: authLoading } = useContext(AuthContext);
   const [selectedPersona, setSelectedPersona] = useState("general");
   const [webSearch, setWebSearch] = useState(false);
@@ -62,9 +63,10 @@ function App() {
   }
 
   async function sendMessage() {
-    const abortController = new AbortController();
-    setController(abortController);
-    console.log("sendMessage called");
+  alert("sendMessage called");
+  console.log("sendMessage called");
+
+  const abortController = new AbortController();
 
     if (!message.trim()) return; if (!message || !message.trim()) {
       console.log("Message is empty");
@@ -96,7 +98,9 @@ function App() {
 
       console.log("Sending request to:", `${API}/chat`);
 
-      const response = await fetch(`${API}/chat`, {
+      alert("About to call /chat");
+
+const response = await fetch(`${API}/chat`, {
         signal: abortController.signal,
         method: "POST",
         headers: {
@@ -111,6 +115,7 @@ function App() {
           persona: selectedPersona,
         }),
       });
+      alert("Response status = " + response.status);
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);

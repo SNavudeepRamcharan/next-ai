@@ -2,11 +2,12 @@ import os
 import base64
 
 from dotenv import load_dotenv
-from openai import AsyncOpenAI
+from openai import OpenAI
 
 load_dotenv()
+print("OPENROUTER KEY =", os.getenv("OPENROUTER_API_KEY"))
 
-client = AsyncOpenAI(
+client = OpenAI(
     api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url="https://openrouter.ai/api/v1",
 )
@@ -98,11 +99,14 @@ async def create_stream(
         api_messages.extend(messages)
 
     print("=" * 50)
+    print("KEY:", os.getenv("OPENROUTER_API_KEY"))
     print("MODEL:", model)
     print("MESSAGES:", api_messages)
     print("=" * 50)
+    print("MAX TOKENS =", 2000)
+    print("MODEL SENT =", model)
 
-    return await client.chat.completions.create(
+    return client.chat.completions.create(
         model=model,
         messages=api_messages,
         tools=[
@@ -110,7 +114,7 @@ async def create_stream(
                 "type": "openrouter:web_search"
             }
         ] if web_search else None,
-        temperature=0.4,
-        max_tokens=2500,
+        temperature=0.7,
+        max_tokens=2000,
         stream=True,
     )

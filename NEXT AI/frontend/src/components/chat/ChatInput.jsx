@@ -13,17 +13,17 @@ function ChatInput({
   const { darkMode } = useContext(ThemeContext);
   const [selectedImage, setSelectedImage] = useState(null);
   const recognition =
-  typeof window !== "undefined"
-    ? (window.SpeechRecognition || window.webkitSpeechRecognition)
-    : null;
+    typeof window !== "undefined"
+      ? (window.SpeechRecognition || window.webkitSpeechRecognition)
+      : null;
 
-    function startVoice() {
+  function startVoice() {
 
     if (!recognition) {
 
-        alert("Speech Recognition is not supported in this browser.");
+      alert("Speech Recognition is not supported in this browser.");
 
-        return;
+      return;
     }
 
     const speech = new recognition();
@@ -34,28 +34,28 @@ function ChatInput({
 
     speech.maxAlternatives = 1;
 
-speech.onresult = (event) => {
+    speech.onresult = (event) => {
 
-    const text = event.results[0][0].transcript;
+      const text = event.results[0][0].transcript;
 
-    setMessage(text);
-};
+      setMessage(text);
+    };
 
-speech.onerror = (event) => {
+    speech.onerror = (event) => {
 
-    console.error("Speech Error:", event.error);
+      console.error("Speech Error:", event.error);
 
-    alert(`Voice Error: ${event.error}`);
-};
+      alert(`Voice Error: ${event.error}`);
+    };
 
-speech.onend = () => {
+    speech.onend = () => {
 
-    console.log("Voice recognition ended");
+      console.log("Voice recognition ended");
 
-};
+    };
 
-speech.start();
-}
+    speech.start();
+  }
 
   async function uploadImage(file) {
     const formData = new FormData();
@@ -64,7 +64,7 @@ speech.start();
     try {
       const response = await fetch(
         `${API}/file/upload`,
-         {
+        {
           method: "POST",
           body: formData,
         }
@@ -104,48 +104,48 @@ speech.start();
     }
   }
   async function generateImage() {
-  const prompt = message.trim();
+    const prompt = message.trim();
 
-  if (!prompt) {
-    alert("Enter an image prompt first.");
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API}/file/generate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        prompt,
-      }),
-    });
-
-    const data = await response.json();
-
-    console.log(data);
-
-    if (data.image) {
-        const imageUrl = `data:image/png;base64,${data.image}`;
-        window.open(imageUrl, "_blank");
-    } else {
-        alert("Image generation failed.");
+    if (!prompt) {
+      alert("Enter an image prompt first.");
+      return;
     }
 
-  } catch (err) {
-    console.error(err);
-    alert("Error generating image.");
+    try {
+      const response = await fetch(`${API}/file/generate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt,
+        }),
+      });
+
+      const data = await response.json();
+
+      console.log(data);
+
+      if (data.image) {
+        const imageUrl = `data:image/png;base64,${data.image}`;
+        window.open(imageUrl, "_blank");
+      } else {
+        alert("Image generation failed.");
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Error generating image.");
+    }
   }
-}
 
   return (
     <div
       style={{
-  padding: "20px",
-  borderTop: darkMode ? "1px solid #333" : "1px solid #ddd",
-  background: darkMode ? "#343541" : "#f8f8f8",
-}}
+        padding: "20px",
+        borderTop: darkMode ? "1px solid #333" : "1px solid #ddd",
+        background: darkMode ? "#343541" : "#f8f8f8",
+      }}
     >
       {selectedImage && (
         <div
@@ -173,84 +173,93 @@ speech.start();
         }}
       >
         <label
-  style={{
-    background: "#444",
-    color: "white",
-    padding: "12px",
-    borderRadius: "10px",
-    cursor: "pointer",
-    fontSize: "20px",
-  }}
->
-  📎
+          style={{
+            background: "#444",
+            color: "white",
+            padding: "12px",
+            borderRadius: "10px",
+            cursor: "pointer",
+            fontSize: "20px",
+          }}
+        >
+          📎
 
-  <input
-    type="file"
-    accept="image/*"
-    hidden
-    onChange={handleImageChange}
-  />
-</label>
+          <input
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={handleImageChange}
+          />
+        </label>
 
-<textarea
-  value={message}
-  onChange={(e) => setMessage(e.target.value)}
-  onKeyDown={handleKeyDown}
-  placeholder="Ask Next AI..."
-  style={{
-  flex: 1,
-  height: "80px",
-  resize: "none",
-  padding: "10px",
-  borderRadius: "10px",
-  background: darkMode ? "#2b2b2b" : "#ffffff",
-  color: darkMode ? "white" : "black",
-  border: darkMode ? "1px solid #444" : "1px solid #ccc",
-}}
-/>
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="Ask Next AI..."
+          style={{
+            flex: 1,
+            height: "80px",
+            resize: "none",
+            padding: "10px",
+            borderRadius: "10px",
+            background: darkMode ? "#2b2b2b" : "#ffffff",
+            color: darkMode ? "white" : "black",
+            border: darkMode ? "1px solid #444" : "1px solid #ccc",
+          }}
+        />
 
-<button
-  onClick={startVoice}
-  style={{
-    width: "60px",
-    border: "none",
-    borderRadius: "10px",
-    background: "#10a37f",
-    color: "white",
-    cursor: "pointer",
-    fontSize: "20px",
-  }}
->
-  🎤
-</button>
+        <button
+          onClick={startVoice}
+          style={{
+            width: "60px",
+            border: "none",
+            borderRadius: "10px",
+            background: "#10a37f",
+            color: "white",
+            cursor: "pointer",
+            fontSize: "20px",
+          }}
+        >
+          🎤
+        </button>
 
-<button
-  onClick={loading ? stopGenerating : sendMessage}
-  style={{
-    width: "120px",
-    border: "none",
-    borderRadius: "10px",
-    background: "#2563eb",
-    color: "white",
-    fontWeight: "bold",
-    cursor: "pointer",
-  }}
->
-  {loading ? "⏹ Stop" : "📤 Send"}
-</button>
-<button
-  onClick={generateImage}
-  style={{
-    width: "140px",
-    border: "none",
-    borderRadius: "10px",
-    background: "#9333ea",
-    color: "white",
-    cursor: "pointer",
-  }}
->
-  🎨 Generate
-</button>
+        <button
+          onClick={loading ? stopGenerating : sendMessage}
+          style={{
+            width: "120px",
+            border: "none",
+            borderRadius: "10px",
+            background: "#2563eb",
+            color: "white",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          {loading ? "⏹ Stop" : "📤 Send"}
+        </button>
+        <button
+          onClick={generateImage}
+          style={{
+            width: "140px",
+            border: "none",
+            borderRadius: "10px",
+            background: "#9333ea",
+            color: "white",
+            cursor: "pointer",
+          }}
+        >
+          🎨 Generate
+        </button>
+        <button
+          onClick={() => {
+            alert("BUTTON CLICKED");
+            console.log("BUTTON CLICKED");
+            sendMessage();
+          }}
+        >
+          📤 Send
+        </button>
       </div>
     </div>
   );
