@@ -115,7 +115,6 @@ function App() {
           persona: selectedPersona,
         }),
       });
-      alert("Response status = " + response.status);
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
