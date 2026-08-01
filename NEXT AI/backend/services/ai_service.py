@@ -108,13 +108,8 @@ async def create_stream(
     print("AI_SERVICE VERSION = 31-JUL-TEST")
 
     return client.chat.completions.create(
-        model=model,
+        model="openai/gpt-4.1-mini",
         messages=api_messages,
-        tools=[
-            {
-                "type": "openrouter:web_search"
-            }
-        ] if web_search else None,
         temperature=0.7,
         max_tokens=2000,
         stream=True,
