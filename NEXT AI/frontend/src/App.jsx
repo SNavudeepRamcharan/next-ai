@@ -63,7 +63,6 @@ function App() {
   }
 
   async function sendMessage() {
-    alert("sendMessage called");
     console.log("sendMessage called");
 
     const abortController = new AbortController();
@@ -97,8 +96,6 @@ function App() {
       }));
 
       console.log("Sending request to:", `${API}/chat`);
-
-      alert("About to call /chat");
 
       const response = await fetch(`${API}/chat`, {
         signal: abortController.signal,
