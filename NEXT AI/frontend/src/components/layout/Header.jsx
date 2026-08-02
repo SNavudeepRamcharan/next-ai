@@ -41,13 +41,6 @@ function Header({
           </button>
 
           <button
-            onClick={toggleTheme}
-            className="header-btn"
-          >
-            {darkMode ? "☀️" : "🌙"}
-          </button>
-
-          <button
             onClick={logout}
             className="header-btn logout-btn"
           >
@@ -55,27 +48,17 @@ function Header({
           </button>
 
           <button
-  onClick={() => setWebSearch(!webSearch)}
-  className={`header-btn web-btn ${webSearch ? "active" : ""}`}
->
+            onClick={() => setWebSearch(!webSearch)}
+            className={`header-btn web-btn ${webSearch ? "active" : ""}`}
+          >
             🌐 {webSearch ? "Web ON" : "Web OFF"}
           </button>
 
           <select
-  value={selectedModel}
-  onChange={(e)=>setSelectedModel(e.target.value)}
-  className="header-select"
->
-            <option value="gemini-3.5-flash">
-              Gemini 3.5 Flash
-            </option>
-          </select>
-
-          <select
-  value={selectedPersona}
-  onChange={(e)=>setSelectedPersona(e.target.value)}
-  className="header-select"
->
+            value={selectedPersona}
+            onChange={(e) => setSelectedPersona(e.target.value)}
+            className="header-select"
+          >
             <option value="general">🤖 General</option>
             <option value="coder">👨‍💻 Programmer</option>
             <option value="teacher">👨‍🏫 Teacher</option>

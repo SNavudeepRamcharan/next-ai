@@ -1,24 +1,28 @@
+import "./TypingIndicator.css";
+
 function TypingIndicator() {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "flex-start",
-        margin: "20px",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          gap: "6px",
-          padding: "12px 18px",
-          borderRadius: "15px",
-          background: "#2b2b2b",
-        }}
-      >
-        <span className="dot"></span>
-        <span className="dot"></span>
-        <span className="dot"></span>
+    <div className="typing-wrapper">
+      <div className="typing-card">
+
+        <div className="typing-avatar">
+          🤖
+        </div>
+
+        <div className="typing-content">
+
+          <div className="typing-title">
+            Next AI
+          </div>
+
+          <div className="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+        </div>
+
       </div>
     </div>
   );

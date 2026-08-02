@@ -1,41 +1,89 @@
 .chat-box{
-    display:flex;
-    align-items:flex-end;
-    gap:12px;
+
     width:100%;
-    overflow:hidden;
+
+    display:flex;
+
+    align-items:flex-end;
+
+    gap:12px;
+
 }
 
 .chat-actions{
+
     display:flex;
-    align-items:center;
+
     gap:10px;
-    flex-shrink:0;
+
+    align-items:center;
+
 }
 
 .chat-actions button{
-    height:56px;
-    padding:0 20px;
-    border-radius:16px;
-    font-size:15px;
-    font-weight:600;
-    white-space:nowrap;
+
+    transition:.25s;
 }
 
-.chat-box textarea{
+.chat-actions button:hover{
+
+    transform:translateY(-2px);
+
+}
+
+textarea{
+
+    font-family:inherit;
+}
+
+/* ---------- Tablet ---------- */
+
+@media (max-width:900px){
+
+.chat-box{
+
+    flex-wrap:wrap;
+
+}
+
+.chat-actions{
+
     width:100%;
-    box-sizing:border-box;
+
+    justify-content:flex-end;
+
 }
 
-@media (max-width:1000px){
+}
 
-    .chat-box{
-        flex-direction:column;
-        align-items:stretch;
-    }
+/* ---------- Mobile ---------- */
 
-    .chat-actions{
-        justify-content:flex-end;
-    }
+@media (max-width:600px){
+
+.chat-box{
+
+    flex-direction:column;
+
+    align-items:stretch;
+
+}
+
+.chat-actions{
+
+    width:100%;
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:10px;
+
+}
+
+.chat-actions button{
+
+    width:100%;
+
+}
 
 }

@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import "./ChatInput.css";
-
+import toast from "react-hot-toast";
 function ChatInput({
   message,
   setMessage,
@@ -22,7 +22,7 @@ function ChatInput({
 
     if (!recognition) {
 
-      alert("Speech Recognition is not supported in this browser.");
+      toast.error("Speech Recognition is not supported.");
 
       return;
     }
@@ -46,7 +46,7 @@ function ChatInput({
 
       console.error("Speech Error:", event.error);
 
-      alert(`Voice Error: ${event.error}`);
+      toast.error(`Voice Error: ${event.error}`);
     };
 
     speech.onend = () => {
@@ -78,13 +78,13 @@ function ChatInput({
       const data = await response.json();
 
       console.log("IMAGE RESPONSE:", data);
-      alert(JSON.stringify(data, null, 2));
+      toast.success("Image uploaded successfully!");
 
       return;
 
     } catch (err) {
       console.error(err);
-      alert("❌ Image upload failed.");
+      toast.error("Image upload failed.");
     }
   }
 
@@ -108,7 +108,7 @@ function ChatInput({
     const prompt = message.trim();
 
     if (!prompt) {
-      alert("Enter an image prompt first.");
+      toast("Enter an image prompt first.");
       return;
     }
 
@@ -130,22 +130,30 @@ function ChatInput({
       if (data.image) {
         const imageUrl = `data:image/png;base64,${data.image}`;
         window.open(imageUrl, "_blank");
+        toast.success("Image generated!");
       } else {
-        alert("Image generation failed.");
+        toast.error("Image generation failed.");
       }
 
     } catch (err) {
       console.error(err);
-      alert("Error generating image.");
+      toast.error("Error generating image.");
     }
   }
 
   return (
     <div
       style={{
-        padding: "14px",
-        borderTop: darkMode ? "1px solid #333" : "1px solid #ddd",
-        background: darkMode ? "#343541" : "#f8f8f8",
+        width: "100%",
+        boxSizing: "border-box",
+
+        padding: "18px",
+
+        background: "transparent",
+
+        position: "sticky",
+        bottom: 0,
+        zIndex: 10,
       }}
     >
       {selectedImage && (
@@ -166,31 +174,49 @@ function ChatInput({
         </div>
       )}
 
-      <div className="chat-box">
+      <div
+        className="chat-box"
+        style={{
+          maxWidth: "980px",
+          margin: "0 auto",
+
+          padding: "14px",
+
+          borderRadius: "24px",
+
+          background: "var(--header)",
+
+          border: "1px solid var(--border)",
+
+          boxShadow: "0 10px 30px rgba(0,0,0,.18)",
+        }}
+      >
         <label
+          htmlFor="image-upload"
           style={{
-            width: "56px",
-            height: "56px",
-            display: "flex",
-            justifyContent: "center",
+            display: "inline-flex",
             alignItems: "center",
-            background: "var(--card)",
-            color: "var(--text)",
-            border: "1px solid var(--border)",
+            justifyContent: "center",
+            width: "52px",
+            height: "52px",
+            marginBottom: "12px",
             borderRadius: "16px",
+            background: "#2563eb",
+            color: "white",
+            fontWeight: "bold",
             cursor: "pointer",
-            fontSize: "22px",
           }}
         >
           📎
-
-          <input
-            type="file"
-            accept="image/*"
-            hidden
-            onChange={handleImageChange}
-          />
         </label>
+
+        <input
+          id="image-upload"
+          type="file"
+          accept="image/*"
+          hidden
+          onChange={handleImageChange}
+        />
 
         <textarea
           value={message}
@@ -206,12 +232,12 @@ function ChatInput({
           style={{
             flex: "1 1 auto",
             minWidth: 0,
-            minHeight: "55px",
+            minHeight: "60px",
             maxHeight: "150px",
             resize: "none",
             overflowY: "auto",
-            padding: "15px",
-            borderRadius: "18px",
+            padding: "16px",
+            borderRadius: "20px",
             background: "var(--card)",
             color: "var(--text)",
             border: "1px solid var(--border)",
@@ -222,10 +248,10 @@ function ChatInput({
           <button
             onClick={startVoice}
             style={{
-              height: "56px",
+              height: "52px",
               width: "56px",
               border: "none",
-              borderRadius: "16px",
+              borderRadius: "18px",
               background: "#2563eb",
               color: "white",
               fontWeight: "bold",
@@ -238,10 +264,10 @@ function ChatInput({
           <button
             onClick={loading ? stopGenerating : sendMessage}
             style={{
-              height: "56px",
+              height: "52px",
               padding: "0 18px",
               border: "none",
-              borderRadius: "16px",
+              borderRadius: "18px",
               background: "#2563eb",
               color: "white",
               fontWeight: "bold",
@@ -253,10 +279,10 @@ function ChatInput({
           <button
             onClick={generateImage}
             style={{
-              height: "56px",
+              height: "52px",
               padding: "0 18px",
               border: "none",
-              borderRadius: "16px",
+              borderRadius: "18px",
               background: "#9333ea",
               color: "white",
               fontWeight: "bold",

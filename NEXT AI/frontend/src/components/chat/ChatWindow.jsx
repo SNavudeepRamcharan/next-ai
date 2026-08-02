@@ -18,12 +18,87 @@ function ChatWindow({
   return (
     <div className="chat-window">
       {messages.length === 0 ? (
-        <div className="welcome-screen">
-          <div className="welcome-icon">🤖</div>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            textAlign: "center",
+            color: "var(--text)",
+            padding: "40px",
+            minHeight: "100%",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "72px",
+              marginBottom: "20px",
+            }}
+          >
+            ✨
+          </div>
 
-          <h1>Welcome to Next AI</h1>
+          <h1
+            style={{
+              margin: 0,
+              fontSize: "42px",
+            }}
+          >
+            Welcome to Next AI
+          </h1>
 
-          <p>How can I help you today?</p>
+          <p
+            style={{
+              marginTop: "18px",
+              fontSize: "18px",
+              opacity: ".7",
+              maxWidth: "650px",
+              lineHeight: "1.7",
+            }}
+          >
+            Ask anything, upload files, generate images,
+            search the web, or simply chat naturally.
+          </p>
+
+          <div
+            style={{
+              marginTop: "40px",
+              display: "grid",
+              gridTemplateColumns: "repeat(2,1fr)",
+              gap: "16px",
+              width: "100%",
+              maxWidth: "700px",
+            }}
+          >
+            {[
+              "💻 Explain React hooks",
+              "🌍 Search today's AI news",
+              "🎨 Generate a futuristic city",
+              "📄 Summarize my PDF",
+            ].map((item) => (
+              <div
+                key={item}
+                style={{
+                  background: "var(--card)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "18px",
+                  padding: "clamp(10px,2vw,20px)",
+                  cursor: "pointer",
+                  transition: ".25s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                {item}
+              </div>
+            ))}
+          </div>
         </div>
       ) : (
         <>
@@ -38,7 +113,7 @@ function ChatWindow({
             />
           ))}
 
-          <div ref={bottomRef}></div>
+          <div ref={bottomRef} />
         </>
       )}
     </div>

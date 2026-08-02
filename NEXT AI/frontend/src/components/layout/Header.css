@@ -1,48 +1,74 @@
 .header{
-    height:70px;
-    background:var(--header);
-    border-bottom:1px solid var(--border);
+    width:100%;
+    min-height:72px;
 
     display:flex;
     justify-content:space-between;
     align-items:center;
 
-    padding:0 25px;
+    padding:16px 28px;
+
+    background:var(--header);
+
+    border-bottom:1px solid var(--border);
+
+    flex-shrink:0;
+
+    box-sizing:border-box;
+
+    backdrop-filter:blur(14px);
+
+    position:sticky;
+    top:0;
+    z-index:20;
 }
 
 .header-title{
-    font-size:28px;
+    font-size:30px;
     font-weight:700;
+
+    letter-spacing:.5px;
+
+    user-select:none;
 }
 
 .header-actions{
     display:flex;
     align-items:center;
-    gap:12px;
+    gap:10px;
+
+    flex-wrap:wrap;
 }
 
-.header-btn{
+.header-btn,
+.header-select{
+
+    height:46px;
+
+    padding:0 18px;
+
+    border-radius:14px;
+
+    border:1px solid var(--border);
 
     background:var(--card);
 
     color:var(--text);
 
-    border:1px solid var(--border);
-
-    border-radius:12px;
-
-    padding:10px 16px;
-
     cursor:pointer;
 
     transition:.25s;
+
+    font-size:15px;
 }
 
-.header-btn:hover{
+.header-btn:hover,
+.header-select:hover{
 
     transform:translateY(-2px);
 
-    border-color:var(--accent);
+    box-shadow:0 8px 20px rgba(0,0,0,.12);
+
 }
 
 .logout-btn{
@@ -52,31 +78,76 @@
     color:white;
 
     border:none;
-}
 
-.web-btn{
-
-    background:#444;
-
-    color:white;
-
-    border:none;
 }
 
 .web-btn.active{
 
     background:#10a37f;
+
+    color:white;
+
 }
 
+/* ---------------- MOBILE ---------------- */
+
+@media(max-width:900px){
+
+.header{
+
+    padding:14px;
+
+    min-height:auto;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:14px;
+
+}
+
+.header-title{
+
+    font-size:24px;
+
+}
+
+.header-actions{
+
+    width:100%;
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:10px;
+
+}
+
+.header-btn,
 .header-select{
 
-    background:var(--card);
+    width:100%;
 
-    color:var(--text);
+}
 
-    border:1px solid var(--border);
+}
 
-    border-radius:12px;
+/* ---------------- SMALL MOBILE ---------------- */
 
-    padding:10px;
+@media(max-width:500px){
+
+.header-actions{
+
+    grid-template-columns:1fr;
+
+}
+
+.header-title{
+
+    font-size:22px;
+
+}
+
 }

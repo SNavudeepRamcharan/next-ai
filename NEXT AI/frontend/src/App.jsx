@@ -9,6 +9,7 @@ import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { Navigate, Routes, Route } from "react-router-dom";
 import ShareChat from "./pages/ShareChat";
+import { Toaster } from "react-hot-toast";
 function App() {
   const API = import.meta.env.VITE_API_URL;
   console.log("API =", API);
@@ -274,51 +275,82 @@ function App() {
     return <Navigate to="/login" replace />;
   }
   return (
-    <Routes>
-
-      <Route
-        path="/share/:id"
-        element={<ShareChat />}
+    <>
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 2500,
+          style: {
+            background: "var(--card)",
+            color: "var(--text)",
+            border: "1px solid var(--border)",
+            borderRadius: "14px",
+          },
+        }}
       />
 
-      <Route
-        path="*"
-        element={
-          <MainLayout
-            newChat={newChat}
-            openChat={openChat}
-          >
-            <Header
-              selectedModel={selectedModel}
-              setSelectedModel={setSelectedModel}
-              webSearch={webSearch}
-              setWebSearch={setWebSearch}
-              selectedPersona={selectedPersona}
-              setSelectedPersona={setSelectedPersona}
-            />
+      <>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 2500,
+            style: {
+              background: "var(--card)",
+              color: "var(--text)",
+              border: "1px solid var(--border)",
+              borderRadius: "14px",
+            },
+          }}
+        />
 
-            <ChatWindow
-              messages={messages}
-              regenerateResponse={regenerateResponse}
-              editMessage={editMessage}
-            />
+        <Routes>
 
-            {loading && <TypingIndicator />}
+          <Route
+            path="/share/:id"
+            element={<ShareChat />}
+          />
 
-            <ChatInput
-              message={message}
-              setMessage={setMessage}
-              sendMessage={sendMessage}
-              stopGenerating={stopGenerating}
-              loading={loading}
-              setImagePath={setImagePath}
-            />
+          <Route
+            path="*"
+            element={
+              <MainLayout
+                newChat={newChat}
+                openChat={openChat}
+              >
+                <Header
+                  selectedModel={selectedModel}
+                  setSelectedModel={setSelectedModel}
+                  webSearch={webSearch}
+                  setWebSearch={setWebSearch}
+                  selectedPersona={selectedPersona}
+                  setSelectedPersona={setSelectedPersona}
+                />
 
-          </MainLayout>
-        }
-      />
+                <ChatWindow
+                  messages={messages}
+                  regenerateResponse={regenerateResponse}
+                  editMessage={editMessage}
+                />
 
-    </Routes>
+                {loading && <TypingIndicator />}
+
+                <ChatInput
+                  message={message}
+                  setMessage={setMessage}
+                  sendMessage={sendMessage}
+                  stopGenerating={stopGenerating}
+                  loading={loading}
+                  setImagePath={setImagePath}
+                />
+
+              </MainLayout>
+            }
+          />
+
+        </Routes>
+      </>
+    </>
   );
 }
 

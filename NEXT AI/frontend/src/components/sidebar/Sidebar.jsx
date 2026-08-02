@@ -5,7 +5,15 @@ import { useEffect, useState } from "react";
 
 import "./Sidebar.css";
 
-function Sidebar({ newChat, openChat }) {
+import toast from "react-hot-toast";
+
+function Sidebar({
+  newChat,
+  openChat,
+  mobile,
+  sidebarOpen,
+  setSidebarOpen,
+}) {
   const { darkMode } = useContext(ThemeContext);
   const API = import.meta.env.VITE_API_URL;
 
@@ -81,7 +89,7 @@ function Sidebar({ newChat, openChat }) {
 
     if (data.shared) {
       navigator.clipboard.writeText(data.url);
-      alert("🔗 Share link copied!");
+      toast.success("Share link copied!");
     } else {
       alert("Sharing disabled.");
     }
@@ -90,137 +98,270 @@ function Sidebar({ newChat, openChat }) {
   }
 
   const menuStyle = {
-    background: "#343541",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    padding: "8px",
+    background: "var(--card)",
+    color: "var(--text)",
+    border: "1px solid var(--border)",
+    borderRadius: "12px",
+    padding: "10px 14px",
     cursor: "pointer",
     textAlign: "left",
+    transition: ".2s",
   };
 
   return (
-    <div className="sidebar">
-      <div className="sidebar-header">
-        ✦ Next AI
-      </div>
+    <>
+      {mobile && sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,.45)",
+            zIndex: 999,
+          }}
+        />
+      )}
 
-      <button
-        onClick={newChat}
-        className="new-chat"
+      <div
+        className="sidebar"
+        style={{
+  position: mobile ? "fixed" : "relative",
+
+  left: mobile
+    ? sidebarOpen
+      ? "0"
+      : "-320px"
+    : "0",
+
+  top: 0,
+
+  height: "100vh",
+
+  zIndex: 1000,
+
+  transition: "left .3s ease",
+
+  flexShrink: 0,
+}}
       >
-        ➕ New Chat
-      </button>
-
-      <input
-        type="text"
-        placeholder="🔍 Search chats..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="search-box"
-      />
-
-      <div className="chat-list">
-        {chats
-          .filter((chat) =>
-            chat.title.toLowerCase().includes(search.toLowerCase())
-          )
-          .map((chat) => (
+        <div
+          className="sidebar-header"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            fontSize: "18px",
+            fontWeight: "700",
+          }}
+        >
+          <span style={{ fontSize: "26px" }}>✨</span>
+          <div>
+            <div>Next AI</div>
             <div
-              key={chat.id}
-              className="chat-item"
+              style={{
+                fontSize: "11px",
+                opacity: 0.6,
+                fontWeight: 400,
+              }}
             >
+              Your AI Workspace
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={newChat}
+          className="new-chat"
+        >
+          ➕ New Chat
+        </button>
+
+        <div
+  style={{
+    padding: "0 16px 18px",
+  }}
+>
+  <div
+    style={{
+      position: "relative",
+      width: "100%",
+      background: "var(--bg)",
+      border: "1px solid var(--border)",
+      borderRadius: "16px",
+      overflow: "hidden",
+      boxShadow: "0 4px 12px rgba(0,0,0,.12)",
+    }}
+  >
+    <span
+      style={{
+        position: "absolute",
+        left: "16px",
+        top: "50%",
+        transform: "translateY(-50%)",
+        fontSize: "18px",
+        opacity: 0.6,
+        pointerEvents: "none",
+      }}
+    >
+      🔍
+    </span>
+
+    <input
+      type="text"
+      placeholder="Search chats..."
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      style={{
+        width: "100%",
+        height: "50px",
+        paddingLeft: "48px",
+        paddingRight: "16px",
+        border: "none",
+        outline: "none",
+        background: "transparent",
+        color: "var(--text)",
+        fontSize: "15px",
+        boxSizing: "border-box",
+      }}
+    />
+  </div>
+</div>
+
+        <div className="chat-list">
+          {chats
+            .filter((chat) =>
+              chat.title.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((chat) => (
               <div
+                key={chat.id}
+                className="chat-item"
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "translateX(4px)";
+                  e.currentTarget.style.boxShadow = "0 8px 18px rgba(0,0,0,.18)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "translateX(0)";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  transition: ".25s",
+                  borderRadius: "14px",
+                  padding: "10px",
+                  marginBottom: "10px",
+                  background: "var(--card)",
+                  border: "1px solid var(--border)",
                 }}
               >
                 <div
-                  onClick={() => openChat(chat.id)}
                   style={{
-                    cursor: "pointer",
-                    fontWeight: "bold",
-                    flex: 1,
-                  }}
-                >
-                  {chat.pinned ? "⭐ " : "💬 "}
-                  {chat.title}
-                </div>
-
-                <button
-                  onClick={() =>
-                    setMenuOpen(menuOpen === chat.id ? null : chat.id)
-                  }
-                  style={{
-                    background: "transparent",
-                    color: darkMode ? "white" : "black",
-                    border: "none",
-                    cursor: "pointer",
-                    fontSize: "18px",
-                  }}
-                >
-                  ⋮
-                </button>
-              </div>
-
-              {menuOpen === chat.id && (
-                <div
-                  style={{
-                    marginTop: "8px",
                     display: "flex",
-                    flexDirection: "column",
-                    gap: "6px",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  <button
+                  <div
                     onClick={() => {
-                      renameChat(chat);
-                      setMenuOpen(null);
+                      openChat(chat.id);
+
+                      if (mobile) setSidebarOpen(false);
                     }}
-                    style={menuStyle}
+                    style={{
+                      cursor: "pointer",
+                      flex: 1,
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                      fontSize: "15px",
+                      fontWeight: "500",
+                    }}
                   >
-                    ✏ Rename
-                  </button>
+                    {chat.pinned ? "⭐ " : "💬 "}
+                    {chat.title}
+                  </div>
 
                   <button
-                    onClick={() => {
-                      pinChat(chat.id);
-                      setMenuOpen(null);
+                    onClick={() =>
+                      setMenuOpen(menuOpen === chat.id ? null : chat.id)
+                    }
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.15)";
                     }}
-                    style={menuStyle}
-                  >
-                    {chat.pinned ? "📍 Unpin" : "📌 Pin"}
-                  </button>
-                  <button
-                    onClick={() => {
-                      shareChat(chat.id);
-                      setMenuOpen(null);
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "scale(1)";
                     }}
-                    style={menuStyle}
-                  >
-                    🔗 Share
-                  </button>
-                  <button
-                    onClick={() => {
-                      deleteChat(chat.id);
-                      setMenuOpen(null);
+                    style={{
+                      width: "36px",
+                      height: "36px",
+                      borderRadius: "10px",
+                      border: "none",
+                      background: "transparent",
+                      color: "var(--text)",
+                      cursor: "pointer",
+                      transition: ".2s",
                     }}
-                    style={menuStyle}
                   >
-                    🗑 Delete
+                    ⋮
                   </button>
                 </div>
-              )}
-            </div>
-          ))}
-      </div>
 
-      <div className="sidebar-footer">
-        Next AI v2
+                {menuOpen === chat.id && (
+                  <div
+                    style={{
+                      marginTop:"10px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "8px",
+                      background: "var(--header)",
+                      padding: "10px",
+                      borderRadius: "12px",
+                      border: "1px solid var(--border)",
+                    }}
+                  >
+                    <button
+                      onClick={() => {
+                        renameChat(chat);
+                        setMenuOpen(null);
+                      }}
+                      style={menuStyle}
+                    >
+                      ✏ Rename
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        pinChat(chat.id);
+                        setMenuOpen(null);
+                      }}
+                      style={menuStyle}
+                    >
+                      {chat.pinned ? "📍 Unpin" : "📌 Pin"}
+                    </button>
+                    <button
+                      onClick={() => {
+                        shareChat(chat.id);
+                        setMenuOpen(null);
+                      }}
+                      style={menuStyle}
+                    >
+                      🔗 Share
+                    </button>
+                    <button
+                      onClick={() => {
+                        deleteChat(chat.id);
+                        setMenuOpen(null);
+                      }}
+                      style={menuStyle}
+                    >
+                      🗑 Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
