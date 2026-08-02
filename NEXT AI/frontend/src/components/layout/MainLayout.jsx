@@ -39,17 +39,17 @@ function MainLayout({ children, newChat, openChat }) {
       />
 
       <main
-  style={{
-    flex: 1,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "stretch",
-    background: "var(--bg)",
-    overflow: "hidden",
-    margin: 0,
-    padding: 0,
-  }}
->
+        style={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "stretch",
+          background: "var(--bg)",
+          overflow: "hidden",
+          margin: 0,
+          padding: 0,
+        }}
+      >
         <div
           style={{
             width: "100%",
@@ -69,21 +69,22 @@ function MainLayout({ children, newChat, openChat }) {
 
                 position: "fixed",
 
-                top: 16,
+                top: 8,
 
-                left: 16,
+                left: 8,
 
                 zIndex: 2000,
 
-                width: 50,
+                width: 44,
 
-                height: 50,
+                height: 44,
 
                 borderRadius: "50%",
 
                 border: "none",
 
-                background: "var(--accent)",
+                background: "rgba(16,163,127,.95)",
+                backdropFilter: "blur(12px)",
 
                 color: "white",
 
@@ -91,7 +92,8 @@ function MainLayout({ children, newChat, openChat }) {
 
                 cursor: "pointer",
 
-                boxShadow: "0 8px 20px rgba(0,0,0,.3)"
+                boxShadow: "0 8px 20px rgba(0,0,0,.18)",
+                opacity: .95,
 
               }}
 

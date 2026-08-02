@@ -8,6 +8,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import toast from "react-hot-toast";
+import "./MessageBubble.css";
 
 function MessageBubble({
   sender,
@@ -47,63 +48,11 @@ setCopied(true);
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: isUser ? "flex-end" : "flex-start",
-        marginBottom: "24px",
-        padding: "0 20px",
-      }}
-    >
-      <div
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = "translateY(-2px)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = "translateY(0px)";
-        }}
-        style={{
-          display: "inline-block",
-          width: "fit-content",
-          maxWidth: window.innerWidth < 900 ? "95%" : "78%",
-          minWidth: "120px",
-
-          padding: "12px 16px",
-
-          borderRadius: "18px",
-          background: isUser
-            ? "linear-gradient(135deg,var(--accent),#3b82f6)"
-            : "var(--card)",
-
-          color: "var(--text)",
-          border: "1px solid var(--border)",
-
-          lineHeight: "1.6",
-
-          overflow: "hidden",
-          wordBreak: "break-word",
-          transition: ".25s",
-          boxShadow: "0 8px 20px rgba(0,0,0,.12)",
-        }}
-      >
+    <div className={`message-wrapper ${isUser ? "user" : "ai"}`}>
+      <div className={`message-card ${isUser ? "user" : "ai"}`}>
         {isUser ? (
           <>
-            <div
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.08)";
-              }}
-
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-              }}
-              style={{
-                fontSize: "13px",
-                opacity: 0.75,
-                marginBottom: "8px",
-                fontWeight: "600",
-                transition: ".2s",
-              }}
-            >
+            <div className="message-header">
               👤 You
             </div>
 
@@ -116,13 +65,7 @@ setCopied(true);
               {text}
             </div>
 
-            <div
-              style={{
-                marginTop: "10px",
-                display: "flex",
-                justifyContent: "flex-end",
-              }}
-            >
+            <div className="message-actions">
               <button
                 onClick={onEdit}
                 onMouseEnter={(e) => {
@@ -148,23 +91,9 @@ setCopied(true);
           </>
         ) : (
           <>
-            <div
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.08)";
-              }}
-
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-              }}
-              style={{
-                fontSize: "13px",
-                opacity: 0.75,
-                marginBottom: "8px",
-                fontWeight: "600",
-              }}
-            >
-              🤖 Next AI
-            </div>
+            <div className="message-header">
+  🤖 Next AI
+</div>
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeRaw]}
@@ -245,14 +174,7 @@ setCopied(true);
             >
               {text}
             </ReactMarkdown>
-            <div
-              style={{
-                display: "flex",
-                gap: "10px",
-                marginTop: "12px",
-                alignItems: "center",
-              }}
-            >
+            <div className="message-actions">
               <button
                 onClick={() => {
                   setLiked(true);
@@ -369,15 +291,7 @@ setCopied(true);
             </div>
           </>
         )}
-        <div
-          style={{
-            fontSize: "11px",
-            color: "var(--text)",
-            opacity: 0.6,
-            textAlign: "right",
-            marginTop: "8px",
-          }}
-        >
+        <div className="message-time">
           {time}
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import "./ChatInput.css";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 function ChatInput({
   message,
@@ -10,6 +11,15 @@ function ChatInput({
   loading,
   setImagePath,
 }) {
+  const [mobile, setMobile] = useState(window.innerWidth < 900);
+
+  useEffect(() => {
+    const resize = () => setMobile(window.innerWidth < 900);
+
+    window.addEventListener("resize", resize);
+
+    return () => window.removeEventListener("resize", resize);
+  }, []);
   const API = import.meta.env.VITE_API_URL;
   const { darkMode } = useContext(ThemeContext);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -152,7 +162,7 @@ function ChatInput({
         background: "transparent",
 
         position: "sticky",
-        bottom: 0,
+        bottom: "max(0px, env(safe-area-inset-bottom))",
         zIndex: 10,
       }}
     >
@@ -179,16 +189,14 @@ function ChatInput({
         style={{
           maxWidth: "980px",
           margin: "0 auto",
-
-          padding: "14px",
-
-          borderRadius: "24px",
-
+          padding: mobile ? "10px" : "14px",
+          borderRadius: mobile ? "18px" : "24px",
           background: "var(--header)",
-
           border: "1px solid var(--border)",
-
           boxShadow: "0 10px 30px rgba(0,0,0,.18)",
+          display: "flex",
+          flexDirection: mobile ? "column" : "row",
+          gap: "10px",
         }}
       >
         <label

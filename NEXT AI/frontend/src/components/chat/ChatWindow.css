@@ -1,20 +1,66 @@
 .chat-window{
     flex:1;
+    width:100%;
+
     overflow-y:auto;
     overflow-x:hidden;
 
     padding:24px;
 
-    width:100%;
-
     scroll-behavior:smooth;
+
+    scroll-padding-bottom:120px;
+
+    -webkit-overflow-scrolling:touch;
+
+    box-sizing:border-box;
 }
 
+/* Hide scrollbar on Firefox */
+.chat-window{
+    scrollbar-width:thin;
+    scrollbar-color:rgba(255,255,255,.18) transparent;
+}
+
+/* Chrome / Edge */
 .chat-window::-webkit-scrollbar{
     width:8px;
+}
+
+.chat-window::-webkit-scrollbar-track{
+    background:transparent;
 }
 
 .chat-window::-webkit-scrollbar-thumb{
     background:rgba(255,255,255,.18);
     border-radius:999px;
+}
+
+.chat-window::-webkit-scrollbar-thumb:hover{
+    background:rgba(255,255,255,.28);
+}
+
+/* Tablet */
+
+@media (max-width:900px){
+
+.chat-window{
+    padding:18px;
+    padding-bottom:140px;
+}
+
+}
+
+/* Mobile */
+
+@media (max-width:600px){
+
+.chat-window{
+
+    padding:12px;
+
+    padding-bottom:170px;
+
+}
+
 }

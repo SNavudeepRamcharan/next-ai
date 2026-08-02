@@ -116,7 +116,8 @@ function Sidebar({
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(0,0,0,.45)",
+            background: "rgba(0,0,0,.30)",
+            backdropFilter: "blur(4px)",
             zIndex: 999,
           }}
         />
@@ -125,24 +126,27 @@ function Sidebar({
       <div
         className="sidebar"
         style={{
-  position: mobile ? "fixed" : "relative",
+          position: mobile ? "fixed" : "relative",
 
-  left: mobile
-    ? sidebarOpen
-      ? "0"
-      : "-320px"
-    : "0",
+          left: mobile
+            ? sidebarOpen
+              ? "0"
+              : "-85vw"
+            : "0",
 
-  top: 0,
+          width: mobile ? "80vw" : "320px",
+          maxWidth: "320px",
 
-  height: "100vh",
+          top: 0,
 
-  zIndex: 1000,
+          height: "100vh",
 
-  transition: "left .3s ease",
+          zIndex: 1000,
 
-  flexShrink: 0,
-}}
+          transition: "left .28s cubic-bezier(.22,.61,.36,1)",
+
+          flexShrink: 0,
+        }}
       >
         <div
           className="sidebar-header"
@@ -177,55 +181,55 @@ function Sidebar({
         </button>
 
         <div
-  style={{
-    padding: "0 16px 18px",
-  }}
->
-  <div
-    style={{
-      position: "relative",
-      width: "100%",
-      background: "var(--bg)",
-      border: "1px solid var(--border)",
-      borderRadius: "16px",
-      overflow: "hidden",
-      boxShadow: "0 4px 12px rgba(0,0,0,.12)",
-    }}
-  >
-    <span
-      style={{
-        position: "absolute",
-        left: "16px",
-        top: "50%",
-        transform: "translateY(-50%)",
-        fontSize: "18px",
-        opacity: 0.6,
-        pointerEvents: "none",
-      }}
-    >
-      🔍
-    </span>
+          style={{
+            padding: "0 16px 18px",
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              background: "var(--bg)",
+              border: "1px solid var(--border)",
+              borderRadius: "16px",
+              overflow: "hidden",
+              boxShadow: "0 4px 12px rgba(0,0,0,.12)",
+            }}
+          >
+            <span
+              style={{
+                position: "absolute",
+                left: "16px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                fontSize: "18px",
+                opacity: 0.6,
+                pointerEvents: "none",
+              }}
+            >
+              🔍
+            </span>
 
-    <input
-      type="text"
-      placeholder="Search chats..."
-      value={search}
-      onChange={(e) => setSearch(e.target.value)}
-      style={{
-        width: "100%",
-        height: "50px",
-        paddingLeft: "48px",
-        paddingRight: "16px",
-        border: "none",
-        outline: "none",
-        background: "transparent",
-        color: "var(--text)",
-        fontSize: "15px",
-        boxSizing: "border-box",
-      }}
-    />
-  </div>
-</div>
+            <input
+              type="text"
+              placeholder="Search chats..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                width: "100%",
+                height: "50px",
+                paddingLeft: "48px",
+                paddingRight: "16px",
+                border: "none",
+                outline: "none",
+                background: "transparent",
+                color: "var(--text)",
+                fontSize: "15px",
+                boxSizing: "border-box",
+              }}
+            />
+          </div>
+        </div>
 
         <div className="chat-list">
           {chats
@@ -308,7 +312,7 @@ function Sidebar({
                 {menuOpen === chat.id && (
                   <div
                     style={{
-                      marginTop:"10px",
+                      marginTop: "10px",
                       display: "flex",
                       flexDirection: "column",
                       gap: "8px",

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import MessageBubble from "./MessageBubble";
 import "./ChatWindow.css";
 
@@ -7,6 +7,15 @@ function ChatWindow({
   editMessage,
   regenerateResponse,
 }) {
+  const [mobile, setMobile] = useState(window.innerWidth < 900);
+
+  useEffect(() => {
+    const resize = () => setMobile(window.innerWidth < 900);
+
+    window.addEventListener("resize", resize);
+
+    return () => window.removeEventListener("resize", resize);
+  }, []);
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -27,13 +36,13 @@ function ChatWindow({
             flexDirection: "column",
             textAlign: "center",
             color: "var(--text)",
-            padding: "40px",
+            marginTop: mobile ? "24px" : "40px",
             minHeight: "100%",
           }}
         >
           <div
             style={{
-              fontSize: "72px",
+              fontSize: mobile ? "48px" : "72px",
               marginBottom: "20px",
             }}
           >
@@ -43,7 +52,7 @@ function ChatWindow({
           <h1
             style={{
               margin: 0,
-              fontSize: "42px",
+              fontSize: mobile ? "30px" : "42px",
             }}
           >
             Welcome to Next AI
@@ -52,10 +61,10 @@ function ChatWindow({
           <p
             style={{
               marginTop: "18px",
-              fontSize: "18px",
+              fontSize: mobile ? "15px" : "18px",
               opacity: ".7",
               maxWidth: "650px",
-              lineHeight: "1.7",
+              lineHeight: "1.5",
             }}
           >
             Ask anything, upload files, generate images,
@@ -64,27 +73,33 @@ function ChatWindow({
 
           <div
             style={{
-              marginTop: "40px",
+              padding: mobile ? "20px" : "40px",
               display: "grid",
-              gridTemplateColumns: "repeat(2,1fr)",
-              gap: "16px",
+              gridTemplateColumns:
+                mobile
+                  ? "1fr"
+                  : "repeat(2,1fr)",
+              gap: mobile ? "10px" : "16px",
               width: "100%",
               maxWidth: "700px",
             }}
           >
             {[
-              "💻 Explain React hooks",
-              "🌍 Search today's AI news",
-              "🎨 Generate a futuristic city",
-              "📄 Summarize my PDF",
+              "💻 Explain React",
+              "🌍 AI News",
+              "🎨 Generate Image",
+              "📄 Summarize PDF",
             ].map((item) => (
               <div
                 key={item}
                 style={{
                   background: "var(--card)",
                   border: "1px solid var(--border)",
-                  borderRadius: "18px",
-                  padding: "clamp(10px,2vw,20px)",
+                  borderRadius: "14px",
+                  padding:
+                    mobile
+                      ? "12px"
+                      : "20px",
                   cursor: "pointer",
                   transition: ".25s",
                 }}
