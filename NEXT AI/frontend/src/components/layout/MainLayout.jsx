@@ -55,55 +55,56 @@ function MainLayout({ children, newChat, openChat }) {
             width: "100%",
             display: "flex",
             flexDirection: "column",
-            height: "100vh",
+            height:"100vh",
+paddingTop:mobile ? "64px" : 0
           }}
         >
           {children}
           {mobile && (
+<div
+    style={{
+        position:"fixed",
+        top:0,
+        left:0,
+        right:0,
+        height:"64px",
+        background:"var(--header)",
+        borderBottom:"1px solid var(--border)",
+        display:"flex",
+        alignItems:"center",
+        justifyContent:"center",
+        zIndex:2000
+    }}
+>
+    <button
+        onClick={()=>setSidebarOpen(true)}
+        style={{
+            position:"absolute",
+            left:"16px",
+            width:"46px",
+            height:"46px",
+            border:"none",
+            borderRadius:"50%",
+            background:"var(--accent)",
+            color:"#fff",
+            fontSize:"24px",
+            cursor:"pointer"
+        }}
+    >
+        ☰
+    </button>
 
-            <button
-
-              onClick={() => setSidebarOpen(true)}
-
-              style={{
-
-                position: "fixed",
-
-                top: 8,
-
-                left: 8,
-
-                zIndex: 2000,
-
-                width: 44,
-
-                height: 44,
-
-                borderRadius: "50%",
-
-                border: "none",
-
-                background: "rgba(16,163,127,.95)",
-                backdropFilter: "blur(12px)",
-
-                color: "white",
-
-                fontSize: 24,
-
-                cursor: "pointer",
-
-                boxShadow: "0 8px 20px rgba(0,0,0,.18)",
-                opacity: .95,
-
-              }}
-
-            >
-
-              ☰
-
-            </button>
-
-          )}
+    <h2
+        style={{
+            margin:0,
+            fontSize:"30px",
+            fontWeight:700
+        }}
+    >
+        ✦ Next AI
+    </h2>
+</div>
+)}
         </div>
       </main>
     </div>

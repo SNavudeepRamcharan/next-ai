@@ -81,42 +81,49 @@ textarea {
 
 /* ---------- Mobile ---------- */
 
-@media (max-width:600px) {
+@media (max-width:900px){
 
-    .chat-box {
-        flex-direction: row;
-        align-items: center;
-        gap: 8px;
-        padding: 8px !important;
-    }
+.chat-box{
 
-    .chat-actions {
-        display: flex;
-        width: auto;
-        gap: 6px;
-    }
+    display:flex;
+    flex-direction:row;
 
-    .chat-actions button {
-        width: 42px !important;
-        height: 42px !important;
-        padding: 0 !important;
-        border-radius: 12px !important;
-    }
+    align-items:flex-end;
 
-    .chat-actions button span {
-        display: none;
-    }
+    gap:8px;
 
-    textarea {
-        min-height: 44px !important;
-        max-height: 100px !important;
-        padding: 12px !important;
-        font-size: 15px;
-    }
+    padding:10px;
 
-    label[for="image-upload"] {
-        width: 42px !important;
-        height: 42px !important;
-        margin-bottom: 0 !important;
-    }
+}
+
+.chat-actions{
+
+    display:flex;
+
+    gap:8px;
+
+}
+
+.chat-actions button{
+
+    width:48px;
+
+    height:48px;
+
+    padding:0;
+
+    border-radius:14px;
+
+}
+
+textarea{
+
+    flex:1;
+
+    min-height:48px;
+
+    max-height:120px;
+
+}
+
 }

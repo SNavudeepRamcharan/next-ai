@@ -282,7 +282,7 @@ function ChatInput({
               cursor: "pointer",
             }}
           >
-            {loading ? "⏹ Stop" : "📤 Send"}
+            {loading ? "⏹ " : "📤"}
           </button>
           <button
             onClick={generateImage}
@@ -297,7 +297,7 @@ function ChatInput({
               cursor: "pointer",
             }}
           >
-            🎨 Generate
+            🎨
           </button>
         </div>
       </div>

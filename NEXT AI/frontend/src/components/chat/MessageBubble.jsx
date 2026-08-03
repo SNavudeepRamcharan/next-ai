@@ -242,7 +242,7 @@ setCopied(true);
                   cursor: "pointer",
                 }}
               >
-                {copied ? "✅ Copied" : "📋 Copy"}
+                {copied ? "✅" : "📋"}
               </button>
 
               <button
@@ -264,7 +264,7 @@ setCopied(true);
                   cursor: "pointer",
                 }}
               >
-                🔊 Read
+                🔊
               </button>
 
               <button
@@ -286,7 +286,7 @@ setCopied(true);
                   cursor: "pointer",
                 }}
               >
-                🔄 Regenerate
+                🔄
               </button>
             </div>
           </>
