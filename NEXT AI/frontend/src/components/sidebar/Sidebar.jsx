@@ -2,7 +2,8 @@ import { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 
 import { useEffect, useState } from "react";
-
+import { auth } from "../../firebase";
+import { signOut } from "firebase/auth";
 import "./Sidebar.css";
 
 import toast from "react-hot-toast";
@@ -45,6 +46,13 @@ function Sidebar({
       console.error(err);
     }
   }
+  async function logout() {
+  try {
+    await signOut(auth);
+  } catch (err) {
+    console.error(err);
+  }
+}
 
   useEffect(() => {
     loadChats();
