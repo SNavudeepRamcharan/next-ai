@@ -81,18 +81,23 @@ textarea {
 
 /* ---------- Mobile ---------- */
 
-@media (max-width:900px){
+@media(max-width:900px){
 
 .chat-box{
 
     display:flex;
-    flex-direction:row;
 
     align-items:flex-end;
 
     gap:8px;
 
-    padding:10px;
+}
+
+textarea{
+
+    flex:1;
+
+    min-width:0;
 
 }
 
@@ -101,28 +106,6 @@ textarea {
     display:flex;
 
     gap:8px;
-
-}
-
-.chat-actions button{
-
-    width:48px;
-
-    height:48px;
-
-    padding:0;
-
-    border-radius:14px;
-
-}
-
-textarea{
-
-    flex:1;
-
-    min-height:48px;
-
-    max-height:120px;
 
 }
 

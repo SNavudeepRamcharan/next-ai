@@ -365,6 +365,43 @@ function Sidebar({
             ))}
         </div>
       </div>
+      <div
+        style={{
+          marginTop: "auto",
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "10px",
+          borderTop: "1px solid var(--border)"
+        }}
+      >
+        <button className="new-chat">🎨 Themes</button>
+
+        <button className="new-chat">
+          🌐 {webSearch ? "Web ON" : "Web OFF"}
+        </button>
+
+        <select
+          value={selectedPersona}
+          onChange={(e) => setSelectedPersona(e.target.value)}
+          className="search-box"
+        >
+          <option value="general">🤖 General</option>
+          <option value="coder">👨‍💻 Programmer</option>
+          <option value="teacher">👨‍🏫 Teacher</option>
+          <option value="doctor">🩺 Doctor</option>
+          <option value="writer">✍️ Writer</option>
+          <option value="friend">😂 Friend</option>
+        </select>
+
+        <button
+          className="new-chat"
+          style={{ background: "#d35467" }}
+          onClick={logout}
+        >
+          🚪
+        </button>
+      </div>
     </>
   );
 }
