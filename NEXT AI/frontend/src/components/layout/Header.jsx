@@ -1,7 +1,5 @@
 import { useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
-import { auth } from "../../firebase";
-import { signOut } from "firebase/auth";
 import ThemePanel from "./ThemePanel";
 import "./Header.css";
 import { useEffect } from "react";
@@ -24,14 +22,6 @@ function Header({
   const [showThemes, setShowThemes] = useState(false);
 
   const { darkMode, toggleTheme } = useContext(ThemeContext);
-
-  async function logout() {
-    try {
-      await signOut(auth);
-    } catch (err) {
-      console.error(err);
-    }
-  }
 
   return (
     <>

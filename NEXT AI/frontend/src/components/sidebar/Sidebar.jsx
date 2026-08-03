@@ -13,6 +13,16 @@ function Sidebar({
   mobile,
   sidebarOpen,
   setSidebarOpen,
+
+  webSearch,
+  setWebSearch,
+
+  selectedPersona,
+  setSelectedPersona,
+
+  logout,
+  showThemes,
+  setShowThemes,
 }) {
   const { darkMode } = useContext(ThemeContext);
   const API = import.meta.env.VITE_API_URL;
@@ -396,7 +406,7 @@ function Sidebar({
 
         <button
           className="new-chat"
-          style={{ background: "#d35467" }}
+          style={{ background: "#a44e5b" }}
           onClick={logout}
         >
           🚪

@@ -3,7 +3,21 @@ import { ThemeContext } from "../../context/ThemeContext";
 import Sidebar from "../sidebar/Sidebar";
 import { useState, useEffect } from "react";
 
-function MainLayout({ children, newChat, openChat }) {
+function MainLayout({
+children,
+newChat,
+openChat,
+
+webSearch,
+setWebSearch,
+
+selectedPersona,
+setSelectedPersona,
+
+logout,
+showThemes,
+setShowThemes
+}) {
   const { darkMode } = useContext(ThemeContext);
 
   const [mobile, setMobile] = useState(window.innerWidth < 900);
@@ -30,13 +44,7 @@ function MainLayout({ children, newChat, openChat }) {
         color: "var(--text)",
       }}
     >
-      <Sidebar
-        newChat={newChat}
-        openChat={openChat}
-        mobile={mobile}
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-      />
+      
 
       <main
         style={{

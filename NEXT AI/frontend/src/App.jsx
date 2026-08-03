@@ -10,6 +10,8 @@ import { AuthContext } from "./context/AuthContext";
 import { Navigate, Routes, Route } from "react-router-dom";
 import ShareChat from "./pages/ShareChat";
 import { Toaster } from "react-hot-toast";
+import { auth } from "./firebase";
+import { signOut } from "firebase/auth";
 function App() {
   const API = import.meta.env.VITE_API_URL;
   console.log("API =", API);
@@ -24,6 +26,16 @@ function App() {
   const [chatId, setChatId] = useState(crypto.randomUUID());
   const [imagePath, setImagePath] = useState(null);
   const [controller, setController] = useState(null);
+  const [showThemes, setShowThemes] = useState(false);
+
+  async function logout() {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  const [showThemes, setShowThemes] = useState(false);
 
   function newChat() {
     setMessages([]);
@@ -317,6 +329,16 @@ function App() {
               <MainLayout
                 newChat={newChat}
                 openChat={openChat}
+
+                webSearch={webSearch}
+                setWebSearch={setWebSearch}
+
+                selectedPersona={selectedPersona}
+                setSelectedPersona={setSelectedPersona}
+
+                logout={logout}
+                showThemes={showThemes}
+                setShowThemes={setShowThemes}
               >
                 <Header
                   selectedModel={selectedModel}
