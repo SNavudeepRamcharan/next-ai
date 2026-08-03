@@ -35,7 +35,6 @@ function App() {
       console.error(err);
     }
   }
-  const [showThemes, setShowThemes] = useState(false);
 
   function newChat() {
     setMessages([]);
