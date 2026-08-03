@@ -11,6 +11,7 @@ function Header({
   setWebSearch,
   selectedPersona,
   setSelectedPersona,
+  logout,
 }) {
   const [mobile, setMobile] = useState(window.innerWidth < 900);
 

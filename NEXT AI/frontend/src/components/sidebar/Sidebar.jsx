@@ -7,6 +7,7 @@ import { signOut } from "firebase/auth";
 import "./Sidebar.css";
 
 import toast from "react-hot-toast";
+import ThemePanel from "../layout/ThemePanel";
 
 function Sidebar({
   newChat,
@@ -21,7 +22,6 @@ function Sidebar({
   selectedPersona,
   setSelectedPersona,
 
-  logout,
   showThemes,
   setShowThemes,
 }) {
@@ -31,6 +31,15 @@ function Sidebar({
   const [chats, setChats] = useState([]);
   const [search, setSearch] = useState("");
   const [menuOpen, setMenuOpen] = useState(null);
+
+
+  async function logout() {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   async function loadChats() {
     try {
@@ -46,13 +55,7 @@ function Sidebar({
       console.error(err);
     }
   }
-  async function logout() {
-  try {
-    await signOut(auth);
-  } catch (err) {
-    console.error(err);
-  }
-}
+
 
   useEffect(() => {
     loadChats();
@@ -144,27 +147,20 @@ function Sidebar({
       <div
         className="sidebar"
         style={{
-          position: mobile ? "fixed" : "relative",
+  position: mobile ? "fixed" : "relative",
+  left: mobile ? (sidebarOpen ? "0" : "-85vw") : "0",
+  width: mobile ? "80vw" : "320px",
+  maxWidth: "320px",
+  top: 0,
+  height: "100vh",
 
-          left: mobile
-            ? sidebarOpen
-              ? "0"
-              : "-85vw"
-            : "0",
+  display: "flex",
+  flexDirection: "column",
 
-          width: mobile ? "80vw" : "320px",
-          maxWidth: "320px",
-
-          top: 0,
-
-          height: "100vh",
-
-          zIndex: 1000,
-
-          transition: "left .28s cubic-bezier(.22,.61,.36,1)",
-
-          flexShrink: 0,
-        }}
+  zIndex: 1000,
+  transition: "left .28s cubic-bezier(.22,.61,.36,1)",
+  flexShrink: 0,
+}}
       >
         <div
           className="sidebar-header"
@@ -382,43 +378,65 @@ function Sidebar({
               </div>
             ))}
         </div>
-      </div>
-      <div
-        style={{
-          marginTop: "auto",
-          padding: "16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "10px",
-          borderTop: "1px solid var(--border)"
-        }}
-      >
-        <button className="new-chat">🎨 Themes</button>
 
-        <button className="new-chat">
-          🌐 {webSearch ? "Web ON" : "Web OFF"}
-        </button>
-
-        <select
-          value={selectedPersona}
-          onChange={(e) => setSelectedPersona(e.target.value)}
-          className="search-box"
+        <div
+          style={{
+            marginTop: "auto",
+            padding: "16px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            borderTop: "1px solid var(--border)",
+          }}
         >
-          <option value="general">🤖 General</option>
-          <option value="coder">👨‍💻 Programmer</option>
-          <option value="teacher">👨‍🏫 Teacher</option>
-          <option value="doctor">🩺 Doctor</option>
-          <option value="writer">✍️ Writer</option>
-          <option value="friend">😂 Friend</option>
-        </select>
+          <button
+            className="new-chat"
+            onClick={() => setShowThemes(!showThemes)}
+          >
+            🎨 Themes
+          </button>
 
-        <button
-          className="new-chat"
-          style={{ background: "#a44e5b" }}
-          onClick={logout}
-        >
-          🚪
-        </button>
+          {showThemes && (
+            <div
+              style={{
+                position: "absolute",
+                bottom: "90px",
+                left: "15px",
+                zIndex: 2000,
+              }}
+            >
+              <ThemePanel />
+            </div>
+          )}
+
+          <button
+            className="new-chat"
+            onClick={() => setWebSearch(!webSearch)}
+          >
+            🌐 {webSearch ? "Web ON" : "Web OFF"}
+          </button>
+
+          <select
+            value={selectedPersona}
+            onChange={(e) => setSelectedPersona(e.target.value)}
+            className="search-box"
+          >
+            <option value="general">🤖 General</option>
+            <option value="coder">👨‍💻 Programmer</option>
+            <option value="teacher">👨‍🏫 Teacher</option>
+            <option value="doctor">🩺 Doctor</option>
+            <option value="writer">✍️ Writer</option>
+            <option value="friend">😂 Friend</option>
+          </select>
+
+          <button
+            className="new-chat"
+            style={{ background: "#a44e5b" }}
+            onClick={logout}
+          >
+            🚪 Logout
+          </button>
+        </div>
       </div>
     </>
   );

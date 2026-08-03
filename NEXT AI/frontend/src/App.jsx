@@ -26,7 +26,6 @@ function App() {
   const [chatId, setChatId] = useState(crypto.randomUUID());
   const [imagePath, setImagePath] = useState(null);
   const [controller, setController] = useState(null);
-  const [showThemes, setShowThemes] = useState(false);
 
   async function logout() {
     try {
@@ -234,7 +233,7 @@ function App() {
         },
         body: JSON.stringify({
           chat_id: chatId,
-          messages: formatted,
+          messages: history,
           model: selectedModel,
           image: imagePath,
           web_search: webSearch,
@@ -302,18 +301,7 @@ function App() {
       />
 
       <>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 2500,
-            style: {
-              background: "var(--card)",
-              color: "var(--text)",
-              border: "1px solid var(--border)",
-              borderRadius: "14px",
-            },
-          }}
-        />
+        
 
         <Routes>
 
@@ -334,10 +322,9 @@ function App() {
 
                 selectedPersona={selectedPersona}
                 setSelectedPersona={setSelectedPersona}
-
-                logout={logout}
                 showThemes={showThemes}
                 setShowThemes={setShowThemes}
+                logout={logout}
               >
                 <Header
                   selectedModel={selectedModel}
@@ -346,8 +333,8 @@ function App() {
                   setWebSearch={setWebSearch}
                   selectedPersona={selectedPersona}
                   setSelectedPersona={setSelectedPersona}
+                  logout={logout}
                 />
-
                 <ChatWindow
                   messages={messages}
                   regenerateResponse={regenerateResponse}
