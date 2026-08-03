@@ -147,20 +147,20 @@ function Sidebar({
       <div
         className="sidebar"
         style={{
-  position: mobile ? "fixed" : "relative",
-  left: mobile ? (sidebarOpen ? "0" : "-85vw") : "0",
-  width: mobile ? "80vw" : "320px",
-  maxWidth: "320px",
-  top: 0,
-  height: "100vh",
+          position: mobile ? "fixed" : "relative",
+          left: mobile ? (sidebarOpen ? "0" : "-85vw") : "0",
+          width: mobile ? "80vw" : "320px",
+          maxWidth: "320px",
+          top: 0,
+          height: "100vh",
 
-  display: "flex",
-  flexDirection: "column",
+          display: "flex",
+          flexDirection: "column",
 
-  zIndex: 1000,
-  transition: "left .28s cubic-bezier(.22,.61,.36,1)",
-  flexShrink: 0,
-}}
+          zIndex: 1000,
+          transition: "left .28s cubic-bezier(.22,.61,.36,1)",
+          flexShrink: 0,
+        }}
       >
         <div
           className="sidebar-header"

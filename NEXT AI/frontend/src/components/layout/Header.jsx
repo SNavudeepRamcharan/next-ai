@@ -1,6 +1,5 @@
 import { useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
-import ThemePanel from "./ThemePanel";
 import "./Header.css";
 import { useEffect } from "react";
 
@@ -12,6 +11,8 @@ function Header({
   selectedPersona,
   setSelectedPersona,
   logout,
+  showThemes,
+  setShowThemes,
 }) {
   const [mobile, setMobile] = useState(window.innerWidth < 900);
 
@@ -20,7 +21,6 @@ function Header({
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
   }, []);
-  const [showThemes, setShowThemes] = useState(false);
 
   const { darkMode, toggleTheme } = useContext(ThemeContext);
 
@@ -40,16 +40,8 @@ function Header({
         {!mobile && (
           <div
             className="header-actions"
-            style={{
-              display: window.innerWidth < 900 ? "none" : "flex",
-            }}
           >
-            <button
-              onClick={() => setShowThemes(!showThemes)}
-              className="header-btn"
-            >
-              🎨 Themes
-            </button>
+            
 
             <button
               onClick={logout}
@@ -81,18 +73,7 @@ function Header({
         )}
       </div>
 
-      {showThemes && (
-        <div
-          style={{
-            position: "fixed",
-            top: "80px",
-            right: "20px",
-            zIndex: 9999,
-          }}
-        >
-          <ThemePanel />
-        </div>
-      )}
+      
     </>
   );
 }
