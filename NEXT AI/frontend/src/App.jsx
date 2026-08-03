@@ -26,6 +26,7 @@ function App() {
   const [chatId, setChatId] = useState(crypto.randomUUID());
   const [imagePath, setImagePath] = useState(null);
   const [controller, setController] = useState(null);
+  const [showThemes, setShowThemes] = useState(false);
 
   async function logout() {
     try {
