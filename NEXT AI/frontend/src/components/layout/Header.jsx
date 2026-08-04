@@ -67,29 +67,26 @@ function Header({
           </button>
 
           <select
-  value={selectedModel}
-  onChange={(e)=>setSelectedModel(e.target.value)}
-  className="header-select"
->
-            <option value="gemini-3.5-flash">
-              Gemini 3.5 Flash
-            </option>
+            value={selectedModel}
+            onChange={(e) => setSelectedModel(e.target.value)}
+            className="header-select"
+          >
+            <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
           </select>
 
-            <select
-              value={selectedPersona}
-              onChange={(e) => setSelectedPersona(e.target.value)}
-              className="header-select"
-            >
-              <option value="general">🤖 General</option>
-              <option value="coder">👨‍💻 Programmer</option>
-              <option value="teacher">👨‍🏫 Teacher</option>
-              <option value="doctor">🩺 Doctor</option>
-              <option value="writer">🎨 Writer</option>
-              <option value="friend">😂 Friend</option>
-            </select>
-          </div>
-        )}
+          <select
+            value={selectedPersona}
+            onChange={(e) => setSelectedPersona(e.target.value)}
+            className="header-select"
+          >
+            <option value="general">🤖 General</option>
+            <option value="coder">👨‍💻 Programmer</option>
+            <option value="teacher">👨‍🏫 Teacher</option>
+            <option value="doctor">🩺 Doctor</option>
+            <option value="writer">🎨 Writer</option>
+            <option value="friend">😂 Friend</option>
+          </select>
+        </div>
       </div>
 
       
