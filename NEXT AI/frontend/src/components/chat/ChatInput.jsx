@@ -1,7 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import "./ChatInput.css";
-import { useEffect } from "react";
 import toast from "react-hot-toast";
 function ChatInput({
   message,
@@ -46,7 +45,11 @@ function ChatInput({
   function startVoice() {
     if (!recognition) {
 
-      alert("Speech Recognition is not supported in this browser.");
+
+      toast.error("Speech Recognition is not supported.");
+
+
+      alert("Speech Recognition is not supported.");
 
       return;
     }
@@ -63,15 +66,18 @@ function ChatInput({
 
     speech.onerror = (event) => {
 
+
       console.error("Speech Error:", event.error);
 
-      alert(`Voice Error: ${event.error}`);
+      toast.error(`Voice Error: ${event.error}`);
     };
 
     speech.onend = () => {
 
       console.log("Voice recognition ended");
 
+      console.error(event.error);
+      toast.error(`Voice Error: ${event.error}`);
     };
 
     speech.start();
@@ -90,14 +96,21 @@ function ChatInput({
 
       const data = await response.json();
 
+
       console.log("IMAGE RESPONSE:", data);
-      alert(JSON.stringify(data, null, 2));
+      toast.success("Image uploaded successfully!");
+
+      console.log(data);
+
 
       setImagePath(data.path);
 
     } catch (err) {
       console.error(err);
-      alert("❌ Image upload failed.");
+
+
+      alert("Image upload failed");
+
     }
   }
 
@@ -151,98 +164,44 @@ function ChatInput({
     }
   }
 
-  return (
-    <div
-      style={{
-        padding: "14px",
-        borderTop: darkMode ? "1px solid #333" : "1px solid #ddd",
-        background: darkMode ? "#343541" : "#f8f8f8",
-      }}
-    >
-      {selectedImage && (
-        <div
-          style={{
-            marginBottom: "12px",
-          }}
-        >
-          <img
-            src={URL.createObjectURL(selectedImage)}
-            alt="preview"
-            style={{
-              width: "150px",
-              borderRadius: "10px",
-              border: "1px solid #444",
-            }}
+  // ===========================
+  // DESKTOP LAYOUT
+  // ===========================
+
+  if (!mobile) {
+    return (
+      <div className="chat-input-container">
+
+        {selectedImage && (
+          <div className="selected-image">
+            📷 {selectedImage.name}
+          </div>
+        )}
+
+        <div className="chat-input-row">
+
+          <label className="icon-btn">
+            📎
+            <input
+              type="file"
+              hidden
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </label>
+
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask Next AI..."
+            className="chat-input"
+            rows={1}
           />
-        </div>
-      )}
 
-      <div className="chat-box">
-        <label
-          style={{
-            width: "56px",
-            height: "56px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            background: "var(--card)",
-            color: "var(--text)",
-            border: "1px solid var(--border)",
-            borderRadius: "16px",
-            cursor: "pointer",
-            fontSize: "22px",
-          }}
-        >
-          📎
-
-          <input
-            type="file"
-            accept="image/*"
-            hidden
-            onChange={handleImageChange}
-          />
-        </label>
-
-        <textarea
-          value={message}
-          onChange={(e) => {
-            setMessage(e.target.value);
-
-            e.target.style.height = "0px";
-            e.target.style.height = e.target.scrollHeight + "px";
-          }}
-          onKeyDown={handleKeyDown}
-          placeholder="Ask Next AI..."
-          rows={1}
-          style={{
-            flex: "1 1 auto",
-            minWidth: 0,
-            minHeight: "55px",
-            maxHeight: "150px",
-            resize: "none",
-            overflowY: "auto",
-            padding: "15px",
-            borderRadius: "18px",
-            background: "var(--card)",
-            color: "var(--text)",
-            border: "1px solid var(--border)",
-            fontSize: "16px",
-          }}
-        />
-        <div className="chat-actions">
           <button
             className="icon-btn"
             onClick={startVoice}
-            style={{
-              height: "56px",
-              width: "56px",
-              border: "none",
-              borderRadius: "16px",
-              background: "#2563eb",
-              color: "white",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
           >
             🎤
           </button>
@@ -302,18 +261,19 @@ function ChatInput({
           <button
             className="mobile-send-btn"
             onClick={loading ? stopGenerating : sendMessage}
-            style={{
-              height: "56px",
-              padding: "0 18px",
-              border: "none",
-              borderRadius: "16px",
-              background: "#2563eb",
-              color: "white",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
           >
-            {loading ? "⏹ Stop" : "📤 Send"}
+            {loading ? "⏹️" : "➡️"}
+          </button>
+
+        </div>
+
+        <div className="mobile-tools">
+
+          <button
+            className="tool-btn"
+            onClick={startVoice}
+          >
+            🎤 Voice
           </button>
 
           <label className="tool-btn">
@@ -329,18 +289,8 @@ function ChatInput({
           <button
             className="tool-btn"
             onClick={generateImage}
-            style={{
-              height: "56px",
-              padding: "0 18px",
-              border: "none",
-              borderRadius: "16px",
-              background: "#9333ea",
-              color: "white",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
           >
-            🎨 Generate
+            🏞️ Image
           </button>
 
         </div>

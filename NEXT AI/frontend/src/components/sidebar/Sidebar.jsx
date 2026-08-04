@@ -241,7 +241,7 @@ function Sidebar({ newChat, openChat }) {
       <div className="sidebar-footer">
         Next AI v2
       </div>
-    </>
+    </div>
   );
 }
 

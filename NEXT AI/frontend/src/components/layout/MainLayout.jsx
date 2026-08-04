@@ -1,7 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import Sidebar from "../sidebar/Sidebar";
-import { useState, useEffect } from "react";
 
 function MainLayout({
   children,
@@ -43,7 +42,7 @@ function MainLayout({
         }}
       >
         {children}
-      </div>
+      </main>
     </div>
   );
 }
