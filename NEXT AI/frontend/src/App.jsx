@@ -326,14 +326,16 @@ function App() {
                 showThemes={showThemes}
                 setShowThemes={setShowThemes}
               >
-                <Header
-  selectedModel={selectedModel}
-  setSelectedModel={setSelectedModel}
-  webSearch={webSearch}
-  setWebSearch={setWebSearch}
-  selectedPersona={selectedPersona}
-  setSelectedPersona={setSelectedPersona}
-/>
+                {window.innerWidth >= 900 && (
+  <Header
+    selectedModel={selectedModel}
+    setSelectedModel={setSelectedModel}
+    webSearch={webSearch}
+    setWebSearch={setWebSearch}
+    selectedPersona={selectedPersona}
+    setSelectedPersona={setSelectedPersona}
+  />
+)}
 
                 <ChatWindow
                   messages={messages}
