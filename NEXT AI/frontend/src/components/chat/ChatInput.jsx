@@ -2,6 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import "./ChatInput.css";
 import toast from "react-hot-toast";
+
 function ChatInput({
   message,
   setMessage,
@@ -10,15 +11,6 @@ function ChatInput({
   loading,
   setImagePath,
 }) {
-  const [mobile, setMobile] = useState(window.innerWidth < 900);
-
-  useEffect(() => {
-    const resize = () => setMobile(window.innerWidth < 900);
-
-    window.addEventListener("resize", resize);
-
-    return () => window.removeEventListener("resize", resize);
-  }, []);
   const API = import.meta.env.VITE_API_URL;
 
   const { darkMode } = useContext(ThemeContext);
@@ -44,13 +36,7 @@ function ChatInput({
 
   function startVoice() {
     if (!recognition) {
-
-
       toast.error("Speech Recognition is not supported.");
-
-
-      alert("Speech Recognition is not supported.");
-
       return;
     }
 
@@ -65,17 +51,6 @@ function ChatInput({
     };
 
     speech.onerror = (event) => {
-
-
-      console.error("Speech Error:", event.error);
-
-      toast.error(`Voice Error: ${event.error}`);
-    };
-
-    speech.onend = () => {
-
-      console.log("Voice recognition ended");
-
       console.error(event.error);
       toast.error(`Voice Error: ${event.error}`);
     };
@@ -96,21 +71,14 @@ function ChatInput({
 
       const data = await response.json();
 
-
-      console.log("IMAGE RESPONSE:", data);
-      toast.success("Image uploaded successfully!");
-
-      console.log(data);
-
-
       setImagePath(data.path);
 
+      setSelectedImage(file);
+
+      toast.success("Image uploaded successfully!");
     } catch (err) {
       console.error(err);
-
-
-      alert("Image upload failed");
-
+      toast.error("Image upload failed.");
     }
   }
 
@@ -118,8 +86,6 @@ function ChatInput({
     const file = e.target.files[0];
 
     if (!file) return;
-
-    setSelectedImage(file);
 
     uploadImage(file);
   }
@@ -130,11 +96,12 @@ function ChatInput({
       sendMessage();
     }
   }
-   async function generateImage() {
+
+  async function generateImage() {
     const prompt = message.trim();
 
     if (!prompt) {
-      toast("Enter an image prompt first.");
+      toast.error("Enter an image prompt first.");
       return;
     }
 
@@ -153,7 +120,9 @@ function ChatInput({
 
       if (data.image) {
         const imageUrl = `data:image/png;base64,${data.image}`;
+
         window.open(imageUrl, "_blank");
+
         toast.success("Image generated!");
       } else {
         toast.error("Image generation failed.");
@@ -164,13 +133,13 @@ function ChatInput({
     }
   }
 
-  // ===========================
-  // DESKTOP LAYOUT
+    // ===========================
+  // DESKTOP UI
   // ===========================
 
   if (!mobile) {
     return (
-      <div className="chat-input-container">
+      <div className="chat-input-wrapper">
 
         {selectedImage && (
           <div className="selected-image">
@@ -178,47 +147,61 @@ function ChatInput({
           </div>
         )}
 
-        <div className="chat-input-row">
+        <div className="chat-card">
 
-          <label className="icon-btn">
-            📎
-            <input
-              type="file"
-              hidden
-              accept="image/*"
-              onChange={handleImageChange}
+          <div className="chat-top">
+
+            <label className="circle-btn">
+              📎
+              <input
+                hidden
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            </label>
+
+            <textarea
+              value={message}
+              rows={1}
+              placeholder="Ask Next AI..."
+              className="chat-textarea"
+              onChange={(e) => {
+                setMessage(e.target.value);
+
+                e.target.style.height = "0px";
+                e.target.style.height =
+                  e.target.scrollHeight + "px";
+              }}
+              onKeyDown={handleKeyDown}
             />
-          </label>
 
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask Next AI..."
-            className="chat-input"
-            rows={1}
-          />
+            <button
+              className="send-btn"
+              onClick={loading ? stopGenerating : sendMessage}
+            >
+              {loading ? "■" : "➤"}
+            </button>
 
-          <button
-            className="icon-btn"
-            onClick={startVoice}
-          >
-            🎤
-          </button>
+          </div>
 
-          <button
-            className="icon-btn"
-            onClick={generateImage}
-          >
-            🎨
-          </button>
+          <div className="chat-bottom">
 
-          <button
-            className="send-btn"
-            onClick={loading ? stopGenerating : sendMessage}
-          >
-            {loading ? "■" : "➤"}
-          </button>
+            <button
+              className="tool-btn"
+              onClick={startVoice}
+            >
+              🎤 Voice
+            </button>
+
+            <button
+              className="tool-btn"
+              onClick={generateImage}
+            >
+              🎨 Image
+            </button>
+
+          </div>
 
         </div>
 
@@ -226,20 +209,26 @@ function ChatInput({
     );
   }
 
-    return (
+  // ===========================
+  // MOBILE UI
+  // ===========================
+
+  return (
     <div className="mobile-chat-wrapper">
 
       {selectedImage && (
-        <div className="mobile-image-preview">
+        <div className="selected-image">
           📷 {selectedImage.name}
         </div>
       )}
 
-      <div className="mobile-chat-input">
+      <div className="mobile-chat-card">
 
-        <div className="mobile-input-row">
+        {/* Top Row */}
 
-          <label className="mobile-icon-btn">
+        <div className="mobile-top-row">
+
+          <label className="mobile-circle-btn">
             📎
             <input
               hidden
@@ -250,24 +239,32 @@ function ChatInput({
           </label>
 
           <textarea
-            className="mobile-input"
+            className="mobile-textarea"
             rows={1}
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
             placeholder="Ask Next AI..."
+            onChange={(e) => {
+              setMessage(e.target.value);
+
+              e.target.style.height = "0px";
+              e.target.style.height =
+                e.target.scrollHeight + "px";
+            }}
+            onKeyDown={handleKeyDown}
           />
 
           <button
             className="mobile-send-btn"
             onClick={loading ? stopGenerating : sendMessage}
           >
-            {loading ? "⏹️" : "➡️"}
+            {loading ? "■" : "➤"}
           </button>
 
         </div>
 
-        <div className="mobile-tools">
+        {/* Bottom Row */}
+
+        <div className="mobile-bottom-row">
 
           <button
             className="tool-btn"
@@ -290,7 +287,7 @@ function ChatInput({
             className="tool-btn"
             onClick={generateImage}
           >
-            🏞️ Image
+            🎨 Image
           </button>
 
         </div>
