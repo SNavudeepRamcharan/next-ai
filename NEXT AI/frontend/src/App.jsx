@@ -287,19 +287,12 @@ function App() {
   }
   return (
     <Routes>
-
-          <Route
-            path="/share/:id"
-            element={<ShareChat />}
-          />
+      <Route path="/share/:id" element={<ShareChat />} />
 
       <Route
         path="*"
         element={
-          <MainLayout
-            newChat={newChat}
-            openChat={openChat}
-          >
+          <MainLayout newChat={newChat} openChat={openChat}>
             <Header
               selectedModel={selectedModel}
               setSelectedModel={setSelectedModel}
@@ -315,24 +308,20 @@ function App() {
               editMessage={editMessage}
             />
 
-                {loading && <TypingIndicator />}
+            {loading && <TypingIndicator />}
 
-                <ChatInput
-                  message={message}
-                  setMessage={setMessage}
-                  sendMessage={sendMessage}
-                  stopGenerating={stopGenerating}
-                  loading={loading}
-                  setImagePath={setImagePath}
-                />
-
-              </MainLayout>
-            }
-          />
-
-        </Routes>
-      </>
-    </>
+            <ChatInput
+              message={message}
+              setMessage={setMessage}
+              sendMessage={sendMessage}
+              stopGenerating={stopGenerating}
+              loading={loading}
+              setImagePath={setImagePath}
+            />
+          </MainLayout>
+        }
+      />
+    </Routes>
   );
 }
 
