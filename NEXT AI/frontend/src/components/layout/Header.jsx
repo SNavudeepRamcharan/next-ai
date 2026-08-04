@@ -35,7 +35,7 @@ return (
           margin: 0,
         }}
       >
-        
+        ✦ Next AI
       </h2>
 
       <div className="header-actions">
@@ -43,7 +43,7 @@ return (
           onClick={() => setShowThemes(!showThemes)}
           className="header-btn"
         >
-          🎨 
+          🎨 Themes
         </button>
 
         <button
@@ -57,7 +57,7 @@ return (
           onClick={logout}
           className="header-btn logout-btn"
         >
-          🚪
+          🚪 Logout
         </button>
 
         <button
@@ -66,6 +66,16 @@ return (
         >
           🌐 {webSearch ? "Web ON" : "Web OFF"}
         </button>
+
+        <select
+          value={selectedModel}
+          onChange={(e) => setSelectedModel(e.target.value)}
+          className="header-select"
+        >
+          <option value="gemini-3.5-flash">
+            Gemini 3.5 Flash
+          </option>
+        </select>
 
         <select
           value={selectedPersona}
