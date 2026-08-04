@@ -286,63 +286,34 @@ function App() {
     return <Navigate to="/login" replace />;
   }
   return (
-    <>
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-        toastOptions={{
-          duration: 2500,
-          style: {
-            background: "var(--card)",
-            color: "var(--text)",
-            border: "1px solid var(--border)",
-            borderRadius: "14px",
-          },
-        }}
-      />
-
-      <>
-        
-
-        <Routes>
+    <Routes>
 
           <Route
             path="/share/:id"
             element={<ShareChat />}
           />
 
-          <Route
-            path="*"
-            element={
-              <MainLayout
-                newChat={newChat}
-                openChat={openChat}
+      <Route
+        path="*"
+        element={
+          <MainLayout
+            newChat={newChat}
+            openChat={openChat}
+          >
+            <Header
+              selectedModel={selectedModel}
+              setSelectedModel={setSelectedModel}
+              webSearch={webSearch}
+              setWebSearch={setWebSearch}
+              selectedPersona={selectedPersona}
+              setSelectedPersona={setSelectedPersona}
+            />
 
-                webSearch={webSearch}
-                setWebSearch={setWebSearch}
-
-                selectedPersona={selectedPersona}
-                setSelectedPersona={setSelectedPersona}
-                showThemes={showThemes}
-                setShowThemes={setShowThemes}
-                logout={logout}
-              >
-                <Header
-  selectedModel={selectedModel}
-  setSelectedModel={setSelectedModel}
-  webSearch={webSearch}
-  setWebSearch={setWebSearch}
-  selectedPersona={selectedPersona}
-  setSelectedPersona={setSelectedPersona}
-  logout={logout}
-  showThemes={showThemes}
-  setShowThemes={setShowThemes}
-/>
-                <ChatWindow
-                  messages={messages}
-                  regenerateResponse={regenerateResponse}
-                  editMessage={editMessage}
-                />
+            <ChatWindow
+              messages={messages}
+              regenerateResponse={regenerateResponse}
+              editMessage={editMessage}
+            />
 
                 {loading && <TypingIndicator />}
 

@@ -1,112 +1,41 @@
-.chat-box {
-
-    width: 100%;
-
-    display: flex;
-
-    align-items: flex-end;
-
-    gap: 12px;
-
-}
-
-.chat-actions {
-
-    display: flex;
-
-    gap: 10px;
-
-    align-items: center;
-
-}
-
-.chat-actions button {
-
-    transition: .25s;
-}
-
-.chat-actions button:hover {
-
-    transform: translateY(-2px);
-
-}
-
-textarea {
-
-    font-family: inherit;
-}
-
-/* ---------- Tablet ---------- */
-/* ---------- Mobile ---------- */
-
-@media (max-width:600px) {
-
-    .chat-box {
-        flex-direction: row;
-        align-items: center;
-        gap: 8px;
-        padding: 8px !important;
-    }
-
-    .chat-actions {
-        display: flex;
-        width: auto;
-        gap: 6px;
-    }
-
-    .chat-actions button {
-        width: 42px !important;
-        height: 42px !important;
-        padding: 0 !important;
-        border-radius: 12px !important;
-    }
-
-    .chat-actions button span {
-        display: none;
-    }
-
-    textarea {
-        min-height: 44px !important;
-        max-height: 100px !important;
-        padding: 12px !important;
-        font-size: 15px;
-    }
-
-    label[for="image-upload"] {
-        width: 42px !important;
-        height: 42px !important;
-        margin-bottom: 0 !important;
-    }
-}
-
-/* ---------- Mobile ---------- */
-
-@media(max-width:900px){
-
 .chat-box{
-
     display:flex;
-
     align-items:flex-end;
-
-    gap:8px;
-
-}
-
-textarea{
-
-    flex:1;
-
-    min-width:0;
-
+    gap:12px;
+    width:100%;
+    overflow:hidden;
 }
 
 .chat-actions{
-
     display:flex;
-
-    gap:8px;
-
+    align-items:center;
+    gap:10px;
+    flex-shrink:0;
 }
+
+.chat-actions button{
+    height:56px;
+    padding:0 20px;
+    border-radius:16px;
+    font-size:15px;
+    font-weight:600;
+    white-space:nowrap;
+}
+
+.chat-box textarea{
+    width:100%;
+    box-sizing:border-box;
+}
+
+@media (max-width:1000px){
+
+    .chat-box{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .chat-actions{
+        justify-content:flex-end;
+    }
 
 }

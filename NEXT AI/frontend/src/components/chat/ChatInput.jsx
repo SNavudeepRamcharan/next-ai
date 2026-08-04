@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import "./ChatInput.css";
 import { useEffect } from "react";
@@ -21,18 +21,32 @@ function ChatInput({
     return () => window.removeEventListener("resize", resize);
   }, []);
   const API = import.meta.env.VITE_API_URL;
+
   const { darkMode } = useContext(ThemeContext);
+
   const [selectedImage, setSelectedImage] = useState(null);
+
+  const [mobile, setMobile] = useState(window.innerWidth < 900);
+
+  useEffect(() => {
+    const resize = () => {
+      setMobile(window.innerWidth < 900);
+    };
+
+    window.addEventListener("resize", resize);
+
+    return () => window.removeEventListener("resize", resize);
+  }, []);
+
   const recognition =
     typeof window !== "undefined"
-      ? (window.SpeechRecognition || window.webkitSpeechRecognition)
+      ? window.SpeechRecognition || window.webkitSpeechRecognition
       : null;
 
   function startVoice() {
-
     if (!recognition) {
 
-      toast.error("Speech Recognition is not supported.");
+      alert("Speech Recognition is not supported in this browser.");
 
       return;
     }
@@ -40,23 +54,18 @@ function ChatInput({
     const speech = new recognition();
 
     speech.lang = "en-US";
-
     speech.interimResults = false;
-
     speech.maxAlternatives = 1;
 
     speech.onresult = (event) => {
-
-      const text = event.results[0][0].transcript;
-
-      setMessage(text);
+      setMessage(event.results[0][0].transcript);
     };
 
     speech.onerror = (event) => {
 
       console.error("Speech Error:", event.error);
 
-      toast.error(`Voice Error: ${event.error}`);
+      alert(`Voice Error: ${event.error}`);
     };
 
     speech.onend = () => {
@@ -70,31 +79,25 @@ function ChatInput({
 
   async function uploadImage(file) {
     const formData = new FormData();
+
     formData.append("file", file);
 
     try {
-      const response = await fetch(
-        `${API}/file/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Upload failed");
-      }
+      const response = await fetch(`${API}/file/upload`, {
+        method: "POST",
+        body: formData,
+      });
 
       const data = await response.json();
 
       console.log("IMAGE RESPONSE:", data);
-      toast.success("Image uploaded successfully!");
+      alert(JSON.stringify(data, null, 2));
 
-      return;
+      setImagePath(data.path);
 
     } catch (err) {
       console.error(err);
-      toast.error("Image upload failed.");
+      alert("❌ Image upload failed.");
     }
   }
 
@@ -114,7 +117,7 @@ function ChatInput({
       sendMessage();
     }
   }
-  async function generateImage() {
+   async function generateImage() {
     const prompt = message.trim();
 
     if (!prompt) {
@@ -135,8 +138,6 @@ function ChatInput({
 
       const data = await response.json();
 
-      console.log(data);
-
       if (data.image) {
         const imageUrl = `data:image/png;base64,${data.image}`;
         window.open(imageUrl, "_blank");
@@ -144,7 +145,6 @@ function ChatInput({
       } else {
         toast.error("Image generation failed.");
       }
-
     } catch (err) {
       console.error(err);
       toast.error("Error generating image.");
@@ -154,16 +154,9 @@ function ChatInput({
   return (
     <div
       style={{
-        width: "100%",
-        boxSizing: "border-box",
-
-        padding: "18px",
-
-        background: "transparent",
-
-        position: "sticky",
-        bottom: "max(0px, env(safe-area-inset-bottom))",
-        zIndex: 10,
+        padding: "14px",
+        borderTop: darkMode ? "1px solid #333" : "1px solid #ddd",
+        background: darkMode ? "#343541" : "#f8f8f8",
       }}
     >
       {selectedImage && (
@@ -184,47 +177,31 @@ function ChatInput({
         </div>
       )}
 
-      <div
-        className="chat-box"
-        style={{
-          maxWidth: "980px",
-          margin: "0 auto",
-          padding: mobile ? "10px" : "14px",
-          borderRadius: mobile ? "18px" : "24px",
-          background: "var(--header)",
-          border: "1px solid var(--border)",
-          boxShadow: "0 10px 30px rgba(0,0,0,.18)",
-          display: "flex",
-          flexDirection: mobile ? "column" : "row",
-          gap: "10px",
-        }}
-      >
+      <div className="chat-box">
         <label
-          htmlFor="image-upload"
           style={{
-            display: "inline-flex",
-            alignItems: "center",
+            width: "56px",
+            height: "56px",
+            display: "flex",
             justifyContent: "center",
-            width: "52px",
-            height: "52px",
-            marginBottom: "12px",
+            alignItems: "center",
+            background: "var(--card)",
+            color: "var(--text)",
+            border: "1px solid var(--border)",
             borderRadius: "16px",
-            background: "#2563eb",
-            color: "white",
-            fontWeight: "bold",
             cursor: "pointer",
+            fontSize: "22px",
           }}
         >
           📎
-        </label>
 
-        <input
-          id="image-upload"
-          type="file"
-          accept="image/*"
-          hidden
-          onChange={handleImageChange}
-        />
+          <input
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={handleImageChange}
+          />
+        </label>
 
         <textarea
           value={message}
@@ -240,12 +217,12 @@ function ChatInput({
           style={{
             flex: "1 1 auto",
             minWidth: 0,
-            minHeight: "60px",
+            minHeight: "55px",
             maxHeight: "150px",
             resize: "none",
             overflowY: "auto",
-            padding: "16px",
-            borderRadius: "20px",
+            padding: "15px",
+            borderRadius: "18px",
             background: "var(--card)",
             color: "var(--text)",
             border: "1px solid var(--border)",
@@ -254,12 +231,13 @@ function ChatInput({
         />
         <div className="chat-actions">
           <button
+            className="icon-btn"
             onClick={startVoice}
             style={{
-              height: "52px",
+              height: "56px",
               width: "56px",
               border: "none",
-              borderRadius: "18px",
+              borderRadius: "16px",
               background: "#2563eb",
               color: "white",
               fontWeight: "bold",
@@ -270,37 +248,105 @@ function ChatInput({
           </button>
 
           <button
+            className="icon-btn"
+            onClick={generateImage}
+          >
+            🎨
+          </button>
+
+          <button
+            className="send-btn"
+            onClick={loading ? stopGenerating : sendMessage}
+          >
+            {loading ? "■" : "➤"}
+          </button>
+
+        </div>
+
+      </div>
+    );
+  }
+
+    return (
+    <div className="mobile-chat-wrapper">
+
+      {selectedImage && (
+        <div className="mobile-image-preview">
+          📷 {selectedImage.name}
+        </div>
+      )}
+
+      <div className="mobile-chat-input">
+
+        <div className="mobile-input-row">
+
+          <label className="mobile-icon-btn">
+            📎
+            <input
+              hidden
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </label>
+
+          <textarea
+            className="mobile-input"
+            rows={1}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask Next AI..."
+          />
+
+          <button
+            className="mobile-send-btn"
             onClick={loading ? stopGenerating : sendMessage}
             style={{
-              height: "52px",
+              height: "56px",
               padding: "0 18px",
               border: "none",
-              borderRadius: "18px",
+              borderRadius: "16px",
               background: "#2563eb",
               color: "white",
               fontWeight: "bold",
               cursor: "pointer",
             }}
           >
-            {loading ? "⏹ " : "📤"}
+            {loading ? "⏹ Stop" : "📤 Send"}
           </button>
+
+          <label className="tool-btn">
+            📎 Upload
+            <input
+              hidden
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+          </label>
+
           <button
+            className="tool-btn"
             onClick={generateImage}
             style={{
-              height: "52px",
+              height: "56px",
               padding: "0 18px",
               border: "none",
-              borderRadius: "18px",
+              borderRadius: "16px",
               background: "#9333ea",
               color: "white",
               fontWeight: "bold",
               cursor: "pointer",
             }}
           >
-            🎨
+            🎨 Generate
           </button>
+
         </div>
+
       </div>
+
     </div>
   );
 }
