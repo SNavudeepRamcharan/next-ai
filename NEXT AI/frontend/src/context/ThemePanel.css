@@ -1,0 +1,37 @@
+.theme-panel {
+  width: 300px;
+  padding: 18px;
+  border-radius: 18px;
+  background: var(--card, #2b2d31);
+  color: var(--text, white);
+  border: 1px solid var(--border, #444);
+  box-shadow: 0 15px 40px rgba(0,0,0,.35);
+}
+
+.theme-panel h3 {
+  margin: 0 0 15px;
+}
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.theme-btn {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #3b3d42;
+  color: white;
+  transition: .2s;
+}
+
+.theme-btn:hover {
+  transform: translateY(-2px);
+}
+
+.theme-btn.active {
+  background: #2563eb;
+}

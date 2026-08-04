@@ -19,11 +19,15 @@ const themes=[
 
 export default function ThemePanel(){
 
-const {theme,setTheme}=useContext(ThemeContext);
+const context = useContext(ThemeContext);
+
+console.log(context);
 
 return(
 
 <div className="theme-panel">
+<pre>{JSON.stringify(context, null, 2)}</pre>
+
 
 <h3>🎨 Themes</h3>
 
