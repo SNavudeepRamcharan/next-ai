@@ -40,12 +40,7 @@ function Header({
             🎨 Themes
           </button>
 
-          <button
-            onClick={toggleTheme}
-            className="header-btn"
-          >
-            {darkMode ? "☀️" : "🌙"}
-          </button>
+          
 
           <button
             onClick={logout}
@@ -60,16 +55,6 @@ function Header({
 >
             🌐 {webSearch ? "Web ON" : "Web OFF"}
           </button>
-
-          <select
-  value={selectedModel}
-  onChange={(e)=>setSelectedModel(e.target.value)}
-  className="header-select"
->
-            <option value="gemini-3.5-flash">
-              Gemini 3.5 Flash
-            </option>
-          </select>
 
           <select
   value={selectedPersona}

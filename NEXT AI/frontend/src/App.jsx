@@ -9,6 +9,9 @@ import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
 import { Navigate, Routes, Route } from "react-router-dom";
 import ShareChat from "./pages/ShareChat";
+import { Toaster } from "react-hot-toast";
+import { auth } from "./firebase";
+import { signOut } from "firebase/auth";
 function App() {
   const API = import.meta.env.VITE_API_URL;
   console.log("API =", API);
@@ -23,6 +26,15 @@ function App() {
   const [chatId, setChatId] = useState(crypto.randomUUID());
   const [imagePath, setImagePath] = useState(null);
   const [controller, setController] = useState(null);
+  const [showThemes, setShowThemes] = useState(false);
+
+  async function logout() {
+    try {
+      await signOut(auth);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   function newChat() {
     setMessages([]);
@@ -222,7 +234,7 @@ function App() {
         },
         body: JSON.stringify({
           chat_id: chatId,
-          messages: formatted,
+          messages: history,
           model: selectedModel,
           image: imagePath,
           web_search: webSearch,
@@ -274,51 +286,79 @@ function App() {
     return <Navigate to="/login" replace />;
   }
   return (
-    <Routes>
+    <>
 
-      <Route
-        path="/share/:id"
-        element={<ShareChat />}
-      />
+      <>
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 2500,
+            style: {
+              background: "var(--card)",
+              color: "var(--text)",
+              border: "1px solid var(--border)",
+              borderRadius: "14px",
+            },
+          }}
+        />
 
-      <Route
-        path="*"
-        element={
-          <MainLayout
-            newChat={newChat}
-            openChat={openChat}
-          >
-            <Header
-              selectedModel={selectedModel}
-              setSelectedModel={setSelectedModel}
-              webSearch={webSearch}
-              setWebSearch={setWebSearch}
-              selectedPersona={selectedPersona}
-              setSelectedPersona={setSelectedPersona}
-            />
+        <Routes>
 
-            <ChatWindow
-              messages={messages}
-              regenerateResponse={regenerateResponse}
-              editMessage={editMessage}
-            />
+          <Route
+            path="/share/:id"
+            element={<ShareChat />}
+          />
 
-            {loading && <TypingIndicator />}
+          <Route
+            path="*"
+            element={
+              <MainLayout
+                newChat={newChat}
+                openChat={openChat}
 
-            <ChatInput
-              message={message}
-              setMessage={setMessage}
-              sendMessage={sendMessage}
-              stopGenerating={stopGenerating}
-              loading={loading}
-              setImagePath={setImagePath}
-            />
+                webSearch={webSearch}
+                setWebSearch={setWebSearch}
 
-          </MainLayout>
-        }
-      />
+                selectedPersona={selectedPersona}
+                setSelectedPersona={setSelectedPersona}
 
-    </Routes>
+                logout={logout}
+                showThemes={showThemes}
+                setShowThemes={setShowThemes}
+              >
+                <Header
+  selectedModel={selectedModel}
+  setSelectedModel={setSelectedModel}
+  webSearch={webSearch}
+  setWebSearch={setWebSearch}
+  selectedPersona={selectedPersona}
+  setSelectedPersona={setSelectedPersona}
+/>
+
+                <ChatWindow
+                  messages={messages}
+                  regenerateResponse={regenerateResponse}
+                  editMessage={editMessage}
+                />
+
+                {loading && <TypingIndicator />}
+
+                <ChatInput
+                  message={message}
+                  setMessage={setMessage}
+                  sendMessage={sendMessage}
+                  stopGenerating={stopGenerating}
+                  loading={loading}
+                  setImagePath={setImagePath}
+                />
+
+              </MainLayout>
+            }
+          />
+
+        </Routes>
+      </>
+    </>
   );
 }
 
