@@ -10,17 +10,14 @@ export default function ThemeProvider({ children }) {
   useEffect(() => {
     document.body.className = "";
     document.body.classList.add(theme);
+
     localStorage.setItem("theme", theme);
   }, [theme]);
 
   const darkMode = theme !== "light";
 
   function toggleTheme() {
-    if (theme === "dark") {
-      setTheme("light");
-    } else {
-      setTheme("dark");
-    }
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   }
 
   return (

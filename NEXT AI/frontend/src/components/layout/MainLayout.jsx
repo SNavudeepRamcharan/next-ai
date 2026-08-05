@@ -1,34 +1,44 @@
-import { useContext, useState, useEffect } from "react";
-import { ThemeContext } from "../../context/ThemeContext";
+import { useState, useEffect } from "react";
 import Sidebar from "../sidebar/Sidebar";
 
 function MainLayout({
   children,
   newChat,
   openChat,
-
-  webSearch,
-  setWebSearch,
-
-  selectedPersona,
-  setSelectedPersona,
-
-  logout,
-  showThemes,
-  setShowThemes,
 }) {
-  const { darkMode } = useContext(ThemeContext);
+  const [mobile, setMobile] = useState(window.innerWidth < 900);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 900;
+      setMobile(isMobile);
+
+      if (!isMobile) {
+        setSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div
       style={{
         display: "flex",
+        width: "100%",
         height: "100vh",
-        background: darkMode ? "#343541" : "#f8f8f8",
-        color: darkMode ? "white" : "black",
+        overflow: "hidden",
+        background: "var(--bg)",
+        color: "var(--text)",
       }}
     >
       <Sidebar
+        mobile={mobile}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
         newChat={newChat}
         openChat={openChat}
       />
@@ -38,9 +48,33 @@ function MainLayout({
           flex: 1,
           display: "flex",
           flexDirection: "column",
-          background: darkMode ? "#343541" : "#f8f8f8",
+          background: "var(--bg)",
+          overflow: "hidden",
+          position: "relative",
         }}
       >
+        {mobile && (
+          <button
+            onClick={() => setSidebarOpen(true)}
+            style={{
+              position: "fixed",
+              top: 15,
+              left: 15,
+              zIndex: 1001,
+              width: 45,
+              height: 45,
+              borderRadius: 12,
+              border: "none",
+              background: "#2563eb",
+              color: "white",
+              fontSize: 22,
+              cursor: "pointer",
+            }}
+          >
+            ☰
+          </button>
+        )}
+
         {children}
       </main>
     </div>

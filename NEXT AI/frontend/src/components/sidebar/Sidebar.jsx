@@ -6,7 +6,13 @@ import { auth } from "../../firebase";
 import { signOut } from "firebase/auth";
 import "./Sidebar.css";
 
-function Sidebar({ newChat, openChat }) {
+function Sidebar({
+  newChat,
+  openChat,
+  mobile,
+  sidebarOpen,
+  setSidebarOpen,
+}) {
   const { darkMode } = useContext(ThemeContext);
   const API = import.meta.env.VITE_API_URL;
 
@@ -112,7 +118,45 @@ function Sidebar({ newChat, openChat }) {
   };
 
   return (
-    <div className="sidebar">
+  <div
+    className="sidebar"
+    style={{
+      position: mobile ? "fixed" : "relative",
+      left: mobile
+        ? (sidebarOpen ? 0 : "-320px")
+        : 0,
+
+      top: 0,
+      width: "300px",
+      height: "100vh",
+
+      transition: "left .3s ease",
+
+      zIndex: 1000,
+
+      background: "var(--card)",
+    }}
+  >
+    {mobile && (
+  <button
+    onClick={() => setSidebarOpen(false)}
+    style={{
+      position: "absolute",
+      right: 15,
+      top: 15,
+      width: 40,
+      height: 40,
+      border: "none",
+      borderRadius: 10,
+      cursor: "pointer",
+      background: "#ef4444",
+      color: "white",
+      fontSize: 18,
+    }}
+  >
+    ✕
+  </button>
+)}
       <div className="sidebar-header">
         ✦ Next AI
       </div>
