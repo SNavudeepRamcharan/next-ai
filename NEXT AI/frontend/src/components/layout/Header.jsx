@@ -17,26 +17,28 @@ function Header({
   const [showThemes, setShowThemes] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
+  const themeRef = useRef(null);
   useEffect(() => {
-  function handleClickOutside(event) {
-    if (
-      showMenu &&
-      menuRef.current &&
-      !menuRef.current.contains(event.target)
-    ) {
-      setShowMenu(false);
-setShowThemes(false);
+    function handleClickOutside(event) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        (!themeRef.current ||
+          !themeRef.current.contains(event.target))
+      ) {
+        setShowMenu(false);
+        setShowThemes(false);
+      }
     }
-  }
 
-  document.addEventListener("mousedown", handleClickOutside);
-  document.addEventListener("touchstart", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
 
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-    document.removeEventListener("touchstart", handleClickOutside);
-  };
-}, [showMenu]);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, [showMenu]);
 
   return (
     <>
@@ -118,9 +120,9 @@ setShowThemes(false);
       {/* Mobile Popup */}
       {showMenu && (
         <div
-  ref={menuRef}
-  className="mobile-popup"
->
+          ref={menuRef}
+          className="mobile-popup"
+        >
 
           <button onClick={() => setShowThemes(true)}>
             🎨 Themes
@@ -167,10 +169,13 @@ setShowThemes(false);
       )}
 
       {showThemes && (
-        <div className="theme-popup">
-          <ThemePanel />
-        </div>
-      )}
+  <div
+    ref={themeRef}
+    className="theme-popup"
+  >
+    <ThemePanel />
+  </div>
+)}
     </>
   );
 }
