@@ -71,20 +71,6 @@ setShowThemes(false);
 
           <select
             className="header-select"
-            value={selectedModel}
-            onChange={(e) => setSelectedModel(e.target.value)}
-          >
-            <option value="openai/gpt-4.1-mini">
-              GPT-4.1 Mini
-            </option>
-
-            <option value="google/gemini-2.5-flash">
-              Gemini Flash
-            </option>
-          </select>
-
-          <select
-            className="header-select"
             value={selectedPersona}
             onChange={(e) => setSelectedPersona(e.target.value)}
           >
@@ -134,18 +120,7 @@ setShowThemes(false);
             🌐 {webSearch ? "Web ON" : "Web OFF"}
           </button>
 
-          <select
-            value={selectedModel}
-            onChange={(e) => setSelectedModel(e.target.value)}
-          >
-            <option value="openai/gpt-4.1-mini">
-              GPT-4.1 Mini
-            </option>
-
-            <option value="google/gemini-2.5-flash">
-              Gemini Flash
-            </option>
-          </select>
+          
 
           <select
             value={selectedPersona}
