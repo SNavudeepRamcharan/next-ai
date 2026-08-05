@@ -11,6 +11,8 @@
     border-bottom:1px solid var(--border);
 
     position:relative;
+        top:0;
+    z-index:100;
 }
 
 .header-title{

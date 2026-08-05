@@ -29,7 +29,8 @@ function MainLayout({
       style={{
         display: "flex",
         width: "100%",
-        height: "100vh",
+        height: "100dvh",
+overflow: "hidden",
         overflow: "hidden",
         background: "var(--bg)",
         color: "var(--text)",
@@ -44,15 +45,15 @@ function MainLayout({
       />
 
       <main
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          background: "var(--bg)",
-          overflow: "hidden",
-          position: "relative",
-        }}
-      >
+  style={{
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+    background: "var(--bg)",
+    color: "var(--text)",
+  }}
+>
         {mobile && (
           <button
             onClick={() => setSidebarOpen(true)}
